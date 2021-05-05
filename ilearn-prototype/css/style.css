@@ -1,0 +1,6 @@
+a { text-decoration: none; }
+
+#il-itests, #il-chat, 
+#il-to-do-app, #profile-class { cursor: pointer; }
+
+.likePost { color: red; }

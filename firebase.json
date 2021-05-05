@@ -1,0 +1,10 @@
+{
+  "hosting": {
+    "public": "LAR-Chat",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

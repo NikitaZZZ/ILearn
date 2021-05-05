@@ -1,0 +1,23 @@
+#name-task {
+    background: none;
+    color: #000;
+}
+
+#app {
+    width: 500px;
+    margin: auto;
+}
+
+#task {
+    background: none;
+    color: #000;
+    border: 1px solid #000;
+    margin-bottom: 1em;
+}
+
+@media screen and (max-width: 500px) {
+    #app {
+        width: 300px;
+        margin: auto;
+    }
+}
