@@ -806,6 +806,7 @@ let ILVue = new Vue({
                     ILVue.currentUser = 'teacher';
                     document.querySelector('.main-app-teacher').style.display = 'block';
                     startTeacherApp();
+                    innerNews();
                 }
             });
         },
@@ -863,6 +864,7 @@ let ILVue = new Vue({
                         ILVue.currentUser = 'teacher';
                         document.querySelector('.main-app-teacher').style.display = 'block';
                         startTeacherApp();
+                        innerNews();
                     }
                 }).catch((error) => {
                     console.log(error);
