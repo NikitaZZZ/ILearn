@@ -1,5 +1,7 @@
+// date
 const date = new Date();
 
+// window onload
 window.onload = () => {
     let user = JSON.parse(localStorage.getItem('user'));
 
@@ -48,6 +50,9 @@ window.onload = () => {
         const teacherDiv = document.querySelector('.main-app-teacher');
         teacherDiv.parentNode.removeChild(teacherDiv);
 
+        const todo = document.querySelector('#todo');
+        todo.parentNode.removeChild(todo);
+
         ILVue.logIn = true;
         ILVue.currentUser = 'student';
         document.querySelector('.main-app-student').style.display = 'block';
@@ -57,6 +62,7 @@ window.onload = () => {
     }
 }
 
+// teacher component
 Vue.component('teacher-app', {
     template: `
         <div class="container mt-3 main-app-teacher" style="display: none;">
@@ -136,7 +142,7 @@ Vue.component('teacher-app', {
                             </div>
                             <p class="mb-1">Создавайте тесты для учеников.</p>
                         </a>
-                        <a data-bs-toggle="modal" data-bs-target="#todoapp" style="cursor: pointer" class="list-group-item list-group-item-action">
+                        <a data-bs-toggle="modal" data-bs-target="#todo" style="cursor: pointer" class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
                                     <img alt="icon" src="../todo-list/public/bg.png" style="border-radius: 20px; width: 30px; height: 30px;" class="d-inline-block align-text-top">
@@ -146,7 +152,7 @@ Vue.component('teacher-app', {
                             </div>
                             <p class="mb-1">Создавайте заметки, чтобы не забывать важные вещи.</p>
                         </a>
-                        <a href="../todo-list/public/index.html" style="cursor: pointer" class="list-group-item list-group-item-action">
+                        <a data-bs-toggle="modal" data-bs-target="#chat" style="cursor: pointer" class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
                                     <img alt="icon" src="../Social-Network/img/lar_black.png" style="width: 30px; height: 30px;" class="d-inline-block align-text-top">
@@ -169,6 +175,7 @@ Vue.component('teacher-app', {
                     </div>
                 </div>
             </div>
+           
 
             <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="myClass" aria-labelledby="offcanvasWithBothOptionsLabel">
                 <div class="offcanvas-header">
@@ -185,6 +192,7 @@ Vue.component('teacher-app', {
     `,
 });
 
+// student component
 Vue.component('student-app', {
     template: `
         <div class="container mt-3 main-app-student" style="display: none;">
@@ -247,506 +255,44 @@ Vue.component('student-app', {
     `
 });
 
-function startTeacherApp() {
-    const user = JSON.parse(localStorage.getItem('user'));
+// task component
+Vue.component('task', {
+    props: ['data'],
+    data() {
+        return {}
+    },
 
-    window.onblur = () => {
-        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/isOnline`).set(false);
-    }
-
-    window.onfocus = () => {
-        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/isOnline`).set(true);
-    }
-
-    firebase.database().ref(`school${user.school}/teachers/teacher${user.code}`).get().then((snapshot) => {
-        const fullName = snapshot.val().fullName;
-        const school = snapshot.val().school;
-        const klass = snapshot.val().teacherClass;
-        // const teacherId = snapshot.val().teacherId;
-
-        document.getElementById('profile-name').innerHTML = fullName;
-        document.getElementById('profile-class').innerHTML = `Мой класс: ${klass}`;
-        document.getElementById('profile-school').innerHTML = `/ Школа №${school}`;
-
-        firebase.database().ref(`school${user.school}/students`).on('child_added', (data) => {
-            const fullName = data.val().fullName;
-
-            document.getElementById('myClassList').innerHTML += `
-                <li class="list-group-item">${fullName}</li>
-            `;
-        });
-    });
-}
-
-function startStudentApp() {
-    let user = JSON.parse(localStorage.getItem('user'));
-
-    window.onblur = () => {
-        firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}/isOnline`).set(false);
-    }
-
-    window.onfocus = () => {
-        firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}/isOnline`).set(true);
-    }
-
-    console.log(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}`);
-    firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}`).get().then((snapshot) => {
-        const fullName = snapshot.val().fullName;
-        const school = snapshot.val().school;
-        const klass = snapshot.val().klass;
-        // const teacherId = snapshot.val().teacherId;
-
-        document.getElementById('profile-name-student').innerHTML = fullName;
-        document.getElementById('profile-class-student').innerHTML = `Я учусь в ${klass} классе`;
-        document.getElementById('profile-school-student').innerHTML = `/ Школа №${school}`;
-    });
-}
-
-function innerNews() {
-    const user = JSON.parse(localStorage.getItem('user'));
-
-    firebase.database().ref(`school${user.school}/news/`).on('child_added', (data) => {
-        const nameNews = data.val().nameNews;
-        const textNews = data.val().textNews;
-        const fullName = data.val().fullName;
-        const newsId = data.val().newsId;
-        const likes = data.val().likes;
-        const dislikes = data.val().dislikes;
-        const day = data.val().date.day;
-        const month = data.val().date.month;
-        const year = data.val().date.year;
-
-        if (fullName === undefined) {
-            document.getElementById('news').innerHTML += `
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h6 class="card-subtitle text-muted" style="float: right">${day}.${month}.${year}</h6>
-                        <h5 class="card-title">${nameNews}</h5>
-                        <p class="card-text">${textNews}</p>
-                    </div>
-                    <div class="collapse" id="comments${newsId}">
-                        <div id="innerComments${newsId}"></div>
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
-                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}')">Написать</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#" class="card-link likePost" id="likePost${newsId}" onclick="likePost(${newsId}, '${user.school}')"><i class="far fa-heart" id="likePostIcon${newsId}"></i> ${likes}</a>
-                        <a href="#" class="card-link dislikePost" id="dislikePost${newsId}" onclick="dislikePost(${newsId}, '${user.school}')"><i class="far fa-thumbs-down" id="dislikePostIcon${newsId}"></i> ${dislikes}</a>
-                        <a data-bs-toggle="collapse" href="#comments${newsId}" class="card-link" id="commentsPost" style="float: right;"><i class="far fa-comments" id="iconComments"></i> Комментарии</a>
-                    </div>
-                </div>
-            `;
-        } else {
-            document.getElementById('news').innerHTML += `
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h6 class="card-subtitle text-muted" style="float: right">${day}.${month}.${year}</h6>
-                        <h5 class="card-title">${nameNews}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
-                        <p class="card-text">${textNews}</p>
-                    </div>
-                    <div class="collapse" id="comments${newsId}">
-                        <div id="innerComments${newsId}"></div>
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
-                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}')">Написать</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#" class="card-link likePost" id="likePost${newsId}" onclick="likePost(${newsId}, '${user.school}')"><i class="far fa-heart" id="likePostIcon${newsId}"></i> ${likes}</a>
-                        <a href="#" class="card-link dislikePost" id="dislikePost${newsId}" onclick="dislikePost(${newsId}, '${user.school}')"><i class="far fa-thumbs-down" id="dislikePostIcon${newsId}"></i> ${dislikes}</a>
-                        <a data-bs-toggle="collapse" href="#comments${newsId}" class="card-link" id="commentsPost" style="float: right;"><i class="far fa-comments" id="iconComments"></i> Комментарии</a>
-                    </div>
-                </div>
-            `;
+    methods: {
+        task_done() {
+            this.$emit('task_done')
         }
+    },
 
-        firebase.database().ref(`school${user.school}/news/${newsId}/comments/`).on('child_added', (snapshot) => {
-            const fullName = snapshot.val().fullName;
-                    const comment = snapshot.val().comment;
+    template: `
+      <li class="list-group-item d-flex justify-content-between align-items-center" id="task">
+        {{ data.name }}
+        <span class="badge bg-danger rounded-pill" style="cursor: pointer;" @click="task_done()"><i class="fas fa-trash"></i></span>
+      </li>
+    `
+});
 
-                    const commentsDiv = document.getElementById(`innerComments${newsId}`);
-                    commentsDiv.innerHTML += `
-                        <div class="card comment m-auto mb-2">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
-                                <p class="card-text">${comment}</p>
-                            </div>
-                        </div>
-                    `;
-        });
-    
-        if (localStorage.getItem(`emotions${newsId}`) === 'like') {
-          const likePostElem = document.getElementById(`likePostIcon${newsId}`);
-    
-          likePostElem.className = 'fas fa-heart';
-        } else if (localStorage.getItem(`emotions${newsId}`) === 'dislike') {
-          const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`);
-    
-          dislikePostElem.className = 'fas fa-thumbs-down';
-        }
-    });
-
-    try {
-        userClass = `${user.myClass[0]}${user.myClass = user.myClass[1].toUpperCase()}`;
-    } catch {
-        userClass = `${user.klass[0]}${user.klass = user.klass[1].toUpperCase()}`
-    }
-
-    firebase.database().ref(`school${user.school}/news${userClass}/`).on('child_added', (data) => {
-        const nameNews = data.val().nameNews;
-        const textNews = data.val().textNews;
-        const fullName = data.val().fullName;
-        const newsId = data.val().newsId;
-        const likes = data.val().likes;
-        const dislikes = data.val().dislikes;
-        const day = data.val().date.day;
-        const month = data.val().date.month;
-        const year = data.val().date.year;
-
-        if (fullName === undefined) {
-            document.getElementById('news').innerHTML += `
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h6 class="card-subtitle text-muted" style="float: right">${day}.${month}.${year}</h6>
-                        <h5 class="card-title">${nameNews}</h5>
-                        <p class="card-text">${textNews}</p>
-                    </div>
-                    <div class="collapse" id="comments${newsId}">
-                        <div id="innerComments${newsId}"></div>
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
-                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}', '${userClass}')">Написать</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#" class="card-link likePost" id="likePost${newsId}" onclick="likePost(${newsId}, '${user.school}', '${userClass}')"><i class="far fa-heart" id="likePostIcon${newsId}"></i> ${likes}</a>
-                        <a href="#" class="card-link dislikePost" id="dislikePost${newsId}" onclick="dislikePost(${newsId}, '${user.school}', '${userClass}')"><i class="far fa-thumbs-down" id="dislikePostIcon${newsId}"></i> ${dislikes}</a>
-                        <a data-bs-toggle="collapse" href="#comments${newsId}" class="card-link" id="commentsPost" style="float: right;"><i class="far fa-comments" id="iconComments"></i> Комментарии</a>
-                    </div>
-                </div>
-            `;
-        } else {
-            document.getElementById('news').innerHTML += `
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h6 class="card-subtitle text-muted" style="float: right">${day}.${month}.${year}</h6>
-                        <h5 class="card-title">${nameNews}</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
-                        <p class="card-text">${textNews}</p>
-                    </div>
-                    <div class="collapse" id="comments${newsId}">
-                        <div id="innerComments${newsId}"></div>
-                        <form>
-                            <div class="input-group">
-                                <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
-                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}', '${userClass}')">Написать</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="card-footer">
-                        <a href="#" class="card-link likePost" id="likePost${newsId}" onclick="likePost(${newsId}, '${user.school}', '${userClass}')"><i class="far fa-heart" id="likePostIcon${newsId}"></i> ${likes}</a>
-                        <a href="#" class="card-link dislikePost" id="dislikePost${newsId}" onclick="dislikePost(${newsId}, '${user.school}', '${userClass}')"><i class="far fa-thumbs-down" id="dislikePostIcon${newsId}"></i> ${dislikes}</a>
-                        <a data-bs-toggle="collapse" href="#comments${newsId}" class="card-link" id="commentsPost" style="float: right;"><i class="far fa-comments" id="iconComments"></i> Комментарии</a>
-                    </div>
-                </div>
-            `;
-        }
-
-        firebase.database().ref(`school${user.school}/news${userClass}/${newsId}/comments/`).on('child_added', (snapshot) => {
-            console.log('work?')
-                    const fullName = snapshot.val().fullName;
-                    const comment = snapshot.val().comment;
-
-                    const commentsDiv = document.getElementById(`innerComments${newsId}`);
-                    commentsDiv.innerHTML += `
-                        <div class="card comment m-auto mb-2">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
-                                <p class="card-text">${comment}</p>
-                            </div>
-                        </div>
-                    `;
-        });
-    
-        if (localStorage.getItem(`emotions${newsId}`) === 'like') {
-          const likePostElem = document.getElementById(`likePostIcon${newsId}`);
-    
-          likePostElem.className = 'fas fa-heart';
-        } else if (localStorage.getItem(`emotions${newsId}`) === 'dislike') {
-          const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`);
-    
-          dislikePostElem.className = 'fas fa-thumbs-down';
-        }
-    });
-}
-
-function createNews() {
-    const nameNews = document.getElementById('name-news').value;
-    const textNews = document.getElementById('text-news').value;
-
-    const showForAll = document.getElementById('showNewsForAll').checked;
-    const showForClass = document.getElementById('showNewsForClass').checked;
-
-    const showMyName = document.getElementById('showMyNameNews').checked;
-
-    const user = JSON.parse(localStorage.getItem('user'));
-
-    if (!nameNews || !textNews) {
-        Swal.fire({
-            icon: 'error',
-            title: 'Заполните все поля!',
-        });
-    } else {
-        const newsId = getRandId();
-
-        if (showForAll === true) {
-            if (showMyName === true) {
-                firebase.database().ref(`school${user.school}/news/${newsId}`).set({
-                    nameNews: nameNews,
-                    textNews: textNews,
-                    fullName: user.fullName,
-                    newsId: newsId,
-                    likes: 0,
-                    dislikes: 0,
-                    date: {
-                        day: date.getDate(),
-                        month: date.getMonth() + 1,
-                        year: date.getFullYear(),
-                    }
-                });
-            } else {
-                firebase.database().ref(`school${user.school}/news/${newsId}`).set({
-                    nameNews: nameNews,
-                    textNews: textNews,
-                    newsId: newsId,
-                    likes: 0,
-                    dislikes: 0,
-                    date: {
-                        day: date.getDate(),
-                        month: date.getMonth() + 1,
-                        year: date.getFullYear(),
-                    }
-                });
-            }
-        } else if (showForClass === true) {
-            if (showMyName === true) {
-                firebase.database().ref(`school${user.school}/news${user.myClass}/${newsId}`).set({
-                    nameNews: nameNews,
-                    textNews: textNews,
-                    fullName: user.fullName,
-                    newsId: newsId,
-                    likes: 0,
-                    dislikes: 0,
-                    date: {
-                        day: date.getDate(),
-                        month: date.getMonth() + 1,
-                        year: date.getFullYear(),
-                    }
-                });
-            } else {
-                firebase.database().ref(`school${user.school}/news${user.myClass}/${newsId}`).set({
-                    nameNews: nameNews,
-                    textNews: textNews,
-                    newsId: newsId,
-                    likes: 0,
-                    dislikes: 0,
-                    date: {
-                        day: date.getDate(),
-                        month: date.getMonth() + 1,
-                        year: date.getFullYear(),
-                    }
-                });
-            }
-        }
-    }
-}
-
-function postComment(newsId, fullName, school, klass = '') {
-    const commentInput = document.getElementById(`commentInput${newsId}`).value;
-    const commentId = getRandId();
-
-    if (klass === '') {
-        firebase.database().ref(`school${school}/news/${newsId}/comments/comment${commentId}`).set({
-            comment: commentInput,
-            fullName: fullName
-        });
-    } else if (klass !== '') {
-        firebase.database().ref(`school${school}/news${klass}/${newsId}/comments/comment${commentId}`).set({
-            comment: commentInput,
-            fullName: fullName
-        });
-    }
-}
-
-function likePost(newsId, school, klass = '') {
-    if (klass === '') {
-        if (localStorage.getItem(`emotions${newsId}`) === 'dislike') {
-            firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => { 
-                likes = snapshot.val().likes;
-                likes++;
-
-                dislikes = snapshot.val().dislikes;
-                dislikes--;
-            }).then(() => {
-                firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
-                firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
-            
-                const likePostElem = document.getElementById(`likePost${newsId}`)
-                const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
-            
-                likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
-                dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
-            
-                localStorage.setItem(`emotions${newsId}`, 'like');
-            });
-        } else if (localStorage.getItem(`emotions${newsId}`) == null) {
-            firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
-                likes = snapshot.val().likes;
-                likes++;
-            }).then(() => {
-                firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
-            
-                const likePostElem = document.getElementById(`likePost${newsId}`)
-                likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
-            
-                localStorage.setItem(`emotions${newsId}`, 'like');
-            });
-        }
-    } else if (klass !== '') {
-        if (localStorage.getItem(`emotions${newsId}`) === 'dislike') {
-            firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
-                likes = snapshot.val().likes;
-                likes++;
-
-                dislikes = snapshot.val().dislikes;
-                dislikes--;
-            }).then(() => {
-                firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
-                firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
-            
-                const likePostElem = document.getElementById(`likePost${newsId}`)
-                const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
-            
-                likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
-                dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
-            
-                localStorage.setItem(`emotions${newsId}`, 'like');
-            });
-        } else if (localStorage.getItem(`emotions${newsId}`) == null) {
-            firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
-                likes = snapshot.val().likes;
-                likes++;
-            }).then(() => {
-                firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
-            
-                const likePostElem = document.getElementById(`likePost${newsId}`)
-                likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
-            
-                localStorage.setItem(`emotions${newsId}`, 'like');
-            });
-        }
-    }
-}
-  
-function dislikePost(newsId, school, klass = '') {
-    if (klass === '') {
-        if (localStorage.getItem(`emotions${newsId}`) === 'like') {
-            firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => { 
-                dislikes = snapshot.val().dislikes;
-                dislikes++;
-
-                likes = snapshot.val().likes;
-                likes--;
-            }).then(() => {
-                firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
-                firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
-            
-                const likePostElem = document.getElementById(`likePost${newsId}`)
-                const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
-            
-                likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
-                dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
-            
-                localStorage.setItem(`emotions${newsId}`, 'dislike');
-            });
-        } else if (localStorage.getItem(`emotions${newsId}`) == null) {
-            firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => { 
-                dislikes = snapshot.val().dislikes;
-                dislikes++;
-            }).then(() => {
-                firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
-            
-                const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
-                dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
-            
-                localStorage.setItem(`emotions${newsId}`, 'dislike');
-            });
-        }
-    } else if (klass !== '') {
-        if (localStorage.getItem(`emotions${newsId}`) === 'like') {
-            firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => { 
-                dislikes = snapshot.val().dislikes;
-                dislikes++;
-            
-                likes = snapshot.val().likes;
-                likes--;
-            }).then(() => {
-                firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
-                firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
-            
-                const likePostElem = document.getElementById(`likePost${newsId}`)
-                const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
-            
-                likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
-                dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
-            
-                localStorage.setItem(`emotions${newsId}`, 'dislike');
-            });
-        } else if (localStorage.getItem(`emotions${newsId}`) == null) {
-            firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
-                dislikes = snapshot.val().dislikes;
-                dislikes++;
-            }).then(() => {
-                firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
-            
-                const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
-                dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
-            
-                localStorage.setItem(`emotions${newsId}`, 'dislike');
-            });
-        }
-    }
-}
-
-function signOutTeacher() {
-    localStorage.removeItem('user');
-    document.querySelector('.main-app-teacher').style.display = 'none';
-    ILVue.logIn = false;
-    ILVue.currentUser = '';
-
-    location.reload();
-}
-
-function signOutStudent() {
-    localStorage.removeItem('user');
-    document.querySelector('.main-app-student').style.display = 'none';
-    ILVue.logIn = false;
-    ILVue.currentUser = '';
-
-    location.reload();
-}
-
+// vue start
 let ILVue = new Vue({
     el: '#app',
+
+    data: {
+        // Содержание объекта в массиве
+        new_task: {
+            name: '',
+            id: '',
+        },
+
+        // Для поиска таска в массиве
+        currentTask: 0,
+
+        // Массивы To Do
+        tasks: [],
+    },
 
     methods: {
         signUpTeacher: function () {
@@ -784,7 +330,7 @@ let ILVue = new Vue({
                         teacherClass: result.value.yourClass,
                         teacherId: teacherId,
                     });
-    
+
                     Swal.fire({
                         allowOutsideClick: false,
                         allowEscapeKey: false,
@@ -801,7 +347,7 @@ let ILVue = new Vue({
                         myClass: result.value.yourClass,
                         code: teacherId,
                     }));
-    
+
                     ILVue.logIn = true;
                     ILVue.currentUser = 'teacher';
                     document.querySelector('.main-app-teacher').style.display = 'block';
@@ -984,5 +530,614 @@ let ILVue = new Vue({
                 }
             });
         },
+
+        // Добавить задание
+        add_task() {
+            if (this.new_task.name === '') {
+                Swal.fire({
+                    title: "Заполни все поля!",
+                    icon: "error"
+                })
+            } else {
+                const idTask = getRandId();
+
+                this.tasks.push({
+                    name: this.new_task.name,
+                    id: idTask,
+                });
+
+                add_task_db(this.currentTask);
+                this.currentTask += 1;
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2500,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                });
+
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Таск создан!'
+                });
+            }
+        },
+
+        // Удалить задание
+        delete_task(name, id_task) {
+            const index = this.tasks.findIndex(item => item.id === id_task);
+            this.tasks.splice(index, 1);
+
+            firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks/task${id_task}`).remove();
+        },
     }
 });
+
+// teacher app
+function startTeacherApp() {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    window.onblur = () => {
+        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/isOnline`).set(false);
+    }
+
+    window.onfocus = () => {
+        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/isOnline`).set(true);
+    }
+
+    firebase.database().ref(`school${user.school}/teachers/teacher${user.code}`).get().then((snapshot) => {
+        const fullName = snapshot.val().fullName;
+        const school = snapshot.val().school;
+        const klass = snapshot.val().teacherClass;
+        // const teacherId = snapshot.val().teacherId;
+
+        document.getElementById('profile-name').innerHTML = fullName;
+        document.getElementById('profile-class').innerHTML = `Мой класс: ${klass}`;
+        document.getElementById('profile-school').innerHTML = `/ Школа №${school}`;
+
+        firebase.database().ref(`school${user.school}/students`).on('child_added', (data) => {
+            const fullName = data.val().fullName;
+
+            document.getElementById('myClassList').innerHTML += `
+                <li class="list-group-item">${fullName}</li>
+            `;
+        });
+    });
+}
+
+// student app
+function startStudentApp() {
+    let user = JSON.parse(localStorage.getItem('user'));
+
+    window.onblur = () => {
+        firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}/isOnline`).set(false);
+    }
+
+    window.onfocus = () => {
+        firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}/isOnline`).set(true);
+    }
+
+    console.log(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}`);
+    firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}`).get().then((snapshot) => {
+        const fullName = snapshot.val().fullName;
+        const school = snapshot.val().school;
+        const klass = snapshot.val().klass;
+        // const teacherId = snapshot.val().teacherId;
+
+        document.getElementById('profile-name-student').innerHTML = fullName;
+        document.getElementById('profile-class-student').innerHTML = `Я учусь в ${klass} классе`;
+        document.getElementById('profile-school-student').innerHTML = `/ Школа №${school}`;
+    });
+}
+
+// inner news
+function innerNews() {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    firebase.database().ref(`school${user.school}/news/`).on('child_added', (data) => {
+        const nameNews = data.val().nameNews;
+        const textNews = data.val().textNews;
+        const fullName = data.val().fullName;
+        const newsId = data.val().newsId;
+        const likes = data.val().likes;
+        const dislikes = data.val().dislikes;
+        const day = data.val().date.day;
+        const month = data.val().date.month;
+        const year = data.val().date.year;
+
+        if (fullName === undefined) {
+            document.getElementById('news').innerHTML += `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-muted" style="float: right">${day}.${month}.${year}</h6>
+                        <h5 class="card-title">${nameNews}</h5>
+                        <p class="card-text">${textNews}</p>
+                    </div>
+                    <div class="collapse" id="comments${newsId}">
+                        <div id="innerComments${newsId}"></div>
+                        <form>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
+                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}')">Написать</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="card-link likePost" id="likePost${newsId}" onclick="likePost(${newsId}, '${user.school}')"><i class="far fa-heart" id="likePostIcon${newsId}"></i> ${likes}</a>
+                        <a href="#" class="card-link dislikePost" id="dislikePost${newsId}" onclick="dislikePost(${newsId}, '${user.school}')"><i class="far fa-thumbs-down" id="dislikePostIcon${newsId}"></i> ${dislikes}</a>
+                        <a data-bs-toggle="collapse" href="#comments${newsId}" class="card-link" id="commentsPost" style="float: right;"><i class="far fa-comments" id="iconComments"></i> Комментарии</a>
+                    </div>
+                </div>
+            `;
+        } else {
+            document.getElementById('news').innerHTML += `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-muted" style="float: right">${day}.${month}.${year}</h6>
+                        <h5 class="card-title">${nameNews}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
+                        <p class="card-text">${textNews}</p>
+                    </div>
+                    <div class="collapse" id="comments${newsId}">
+                        <div id="innerComments${newsId}"></div>
+                        <form>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
+                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}')">Написать</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="card-link likePost" id="likePost${newsId}" onclick="likePost(${newsId}, '${user.school}')"><i class="far fa-heart" id="likePostIcon${newsId}"></i> ${likes}</a>
+                        <a href="#" class="card-link dislikePost" id="dislikePost${newsId}" onclick="dislikePost(${newsId}, '${user.school}')"><i class="far fa-thumbs-down" id="dislikePostIcon${newsId}"></i> ${dislikes}</a>
+                        <a data-bs-toggle="collapse" href="#comments${newsId}" class="card-link" id="commentsPost" style="float: right;"><i class="far fa-comments" id="iconComments"></i> Комментарии</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        firebase.database().ref(`school${user.school}/news/${newsId}/comments/`).on('child_added', (snapshot) => {
+            const fullName = snapshot.val().fullName;
+                    const comment = snapshot.val().comment;
+
+                    const commentsDiv = document.getElementById(`innerComments${newsId}`);
+                    commentsDiv.innerHTML += `
+                        <div class="card comment m-auto mb-2">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
+                                <p class="card-text">${comment}</p>
+                            </div>
+                        </div>
+            `;
+        });
+
+        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+            let emotions = snapshot.val();
+
+            if (emotions === 'like') {
+                const likePostElem = document.getElementById(`likePostIcon${newsId}`);
+
+                likePostElem.className = 'fas fa-heart';
+            } else if (emotions === 'dislike') {
+                const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`);
+
+                dislikePostElem.className = 'fas fa-thumbs-down';
+            }
+        });
+    });
+
+    try {
+        userClass = `${user.myClass[0]}${user.myClass = user.myClass[1].toUpperCase()}`;
+    } catch {
+        userClass = `${user.klass[0]}${user.klass = user.klass[1].toUpperCase()}`
+    }
+
+    firebase.database().ref(`school${user.school}/news${userClass}/`).on('child_added', (data) => {
+        const nameNews = data.val().nameNews;
+        const textNews = data.val().textNews;
+        const fullName = data.val().fullName;
+        const newsId = data.val().newsId;
+        const likes = data.val().likes;
+        const dislikes = data.val().dislikes;
+        const day = data.val().date.day;
+        const month = data.val().date.month;
+        const year = data.val().date.year;
+
+        if (fullName === undefined) {
+            document.getElementById('news').innerHTML += `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-muted" style="float: right">${day}.${month}.${year}</h6>
+                        <h5 class="card-title">${nameNews}</h5>
+                        <p class="card-text">${textNews}</p>
+                    </div>
+                    <div class="collapse" id="comments${newsId}">
+                        <div id="innerComments${newsId}"></div>
+                        <form>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
+                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}', '${userClass}')">Написать</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="card-link likePost" id="likePost${newsId}" onclick="likePost(${newsId}, '${user.school}', '${userClass}')"><i class="far fa-heart" id="likePostIcon${newsId}"></i> ${likes}</a>
+                        <a href="#" class="card-link dislikePost" id="dislikePost${newsId}" onclick="dislikePost(${newsId}, '${user.school}', '${userClass}')"><i class="far fa-thumbs-down" id="dislikePostIcon${newsId}"></i> ${dislikes}</a>
+                        <a data-bs-toggle="collapse" href="#comments${newsId}" class="card-link" id="commentsPost" style="float: right;"><i class="far fa-comments" id="iconComments"></i> Комментарии</a>
+                    </div>
+                </div>
+            `;
+        } else {
+            document.getElementById('news').innerHTML += `
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="card-subtitle text-muted" style="float: right">${day}.${month}.${year}</h6>
+                        <h5 class="card-title">${nameNews}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
+                        <p class="card-text">${textNews}</p>
+                    </div>
+                    <div class="collapse" id="comments${newsId}">
+                        <div id="innerComments${newsId}"></div>
+                        <form>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
+                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}', '${userClass}')">Написать</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <a href="#" class="card-link likePost" id="likePost${newsId}" onclick="likePost(${newsId}, '${user.school}', '${userClass}')"><i class="far fa-heart" id="likePostIcon${newsId}"></i> ${likes}</a>
+                        <a href="#" class="card-link dislikePost" id="dislikePost${newsId}" onclick="dislikePost(${newsId}, '${user.school}', '${userClass}')"><i class="far fa-thumbs-down" id="dislikePostIcon${newsId}"></i> ${dislikes}</a>
+                        <a data-bs-toggle="collapse" href="#comments${newsId}" class="card-link" id="commentsPost" style="float: right;"><i class="far fa-comments" id="iconComments"></i> Комментарии</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        firebase.database().ref(`school${user.school}/news${userClass}/${newsId}/comments/`).on('child_added', (snapshot) => {
+            console.log('work?')
+                    const fullName = snapshot.val().fullName;
+                    const comment = snapshot.val().comment;
+
+                    const commentsDiv = document.getElementById(`innerComments${newsId}`);
+                    commentsDiv.innerHTML += `
+                        <div class="card comment m-auto mb-2">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
+                                <p class="card-text">${comment}</p>
+                            </div>
+                        </div>
+                    `;
+        });
+
+        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+            let emotions = snapshot.val();
+
+            if (emotions === 'like') {
+                const likePostElem = document.getElementById(`likePostIcon${newsId}`);
+
+                likePostElem.className = 'fas fa-heart';
+            } else if (emotions === 'dislike') {
+                const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`);
+
+                dislikePostElem.className = 'fas fa-thumbs-down';
+            }
+        });
+    });
+}
+
+// create news
+function createNews() {
+    const nameNews = document.getElementById('name-news').value;
+    const textNews = document.getElementById('text-news').value;
+
+    const showForAll = document.getElementById('showNewsForAll').checked;
+    const showForClass = document.getElementById('showNewsForClass').checked;
+
+    const showMyName = document.getElementById('showMyNameNews').checked;
+
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (!nameNews || !textNews) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Заполните все поля!',
+        });
+    } else {
+        const newsId = getRandId();
+
+        if (showForAll === true) {
+            if (showMyName === true) {
+                firebase.database().ref(`school${user.school}/news/${newsId}`).set({
+                    nameNews: nameNews,
+                    textNews: textNews,
+                    fullName: user.fullName,
+                    newsId: newsId,
+                    likes: 0,
+                    dislikes: 0,
+                    date: {
+                        day: date.getDate(),
+                        month: date.getMonth() + 1,
+                        year: date.getFullYear(),
+                    }
+                });
+            } else {
+                firebase.database().ref(`school${user.school}/news/${newsId}`).set({
+                    nameNews: nameNews,
+                    textNews: textNews,
+                    newsId: newsId,
+                    likes: 0,
+                    dislikes: 0,
+                    date: {
+                        day: date.getDate(),
+                        month: date.getMonth() + 1,
+                        year: date.getFullYear(),
+                    }
+                });
+            }
+        } else if (showForClass === true) {
+            if (showMyName === true) {
+                firebase.database().ref(`school${user.school}/news${user.myClass}/${newsId}`).set({
+                    nameNews: nameNews,
+                    textNews: textNews,
+                    fullName: user.fullName,
+                    newsId: newsId,
+                    likes: 0,
+                    dislikes: 0,
+                    date: {
+                        day: date.getDate(),
+                        month: date.getMonth() + 1,
+                        year: date.getFullYear(),
+                    }
+                });
+            } else {
+                firebase.database().ref(`school${user.school}/news${user.myClass}/${newsId}`).set({
+                    nameNews: nameNews,
+                    textNews: textNews,
+                    newsId: newsId,
+                    likes: 0,
+                    dislikes: 0,
+                    date: {
+                        day: date.getDate(),
+                        month: date.getMonth() + 1,
+                        year: date.getFullYear(),
+                    }
+                });
+            }
+        }
+    }
+}
+
+// comment post
+function postComment(newsId, fullName, school, klass = '') {
+    const commentInput = document.getElementById(`commentInput${newsId}`).value;
+    const commentId = getRandId();
+
+    if (klass === '') {
+        firebase.database().ref(`school${school}/news/${newsId}/comments/comment${commentId}`).set({
+            comment: commentInput,
+            fullName: fullName
+        });
+    } else if (klass !== '') {
+        firebase.database().ref(`school${school}/news${klass}/${newsId}/comments/comment${commentId}`).set({
+            comment: commentInput,
+            fullName: fullName
+        });
+    }
+}
+
+// like post
+function likePost(newsId, school, klass = '') {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    if (klass === '') {
+        firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+            let emotions = snapshot.val();
+
+            if (emotions === 'dislike') {
+                firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                    likes = snapshot.val().likes;
+                    likes++;
+
+                    dislikes = snapshot.val().dislikes;
+                    dislikes--;
+                }).then(() => {
+                    firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+                    firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
+
+                    const likePostElem = document.getElementById(`likePost${newsId}`)
+                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                    likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+                    dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
+
+                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                });
+            } else if (emotions === null) {
+                firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                    likes = snapshot.val().likes;
+                    likes++;
+                }).then(() => {
+                    firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+
+                    const likePostElem = document.getElementById(`likePost${newsId}`)
+                    likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+
+                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                });
+            }
+        });
+    } else if (klass !== '') {
+        firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+            let emotions = snapshot.val();
+            if (emotions === 'dislike') {
+                console.log('asd');
+                firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                    likes = snapshot.val().likes;
+                    likes++;
+
+                    dislikes = snapshot.val().dislikes;
+                    dislikes--;
+                }).then(() => {
+                    firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+                    firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+
+                    const likePostElem = document.getElementById(`likePost${newsId}`)
+                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                    likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+                    dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
+
+                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                });
+            } else if (emotions === null) {
+                firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                    likes = snapshot.val().likes;
+                    likes++;
+                }).then(() => {
+                    firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+
+                    const likePostElem = document.getElementById(`likePost${newsId}`)
+                    likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+
+                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                });
+            }
+        });
+    }
+}
+
+// dislike post
+function dislikePost(newsId, school, klass = '') {
+    if (klass === '') {
+        firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+            let emotions = snapshot.val();
+            if (emotions === 'like') {
+                firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                    dislikes = snapshot.val().dislikes;
+                    dislikes++;
+
+                    likes = snapshot.val().likes;
+                    likes--;
+                }).then(() => {
+                    firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+                    firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
+
+                    const likePostElem = document.getElementById(`likePost${newsId}`)
+                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                    likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
+                    dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                });
+            } else if (emotions === null) {
+                firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                    dislikes = snapshot.val().dislikes;
+                    dislikes++;
+                }).then(() => {
+                    firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
+
+                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                    dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                });
+            }
+        });
+    } else if (klass !== '') {
+        firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+            let emotions = snapshot.val();
+
+            if (emotions === 'like') {
+                firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                    dislikes = snapshot.val().dislikes;
+                    dislikes++;
+
+                    likes = snapshot.val().likes;
+                    likes--;
+                }).then(() => {
+                    firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+                    firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+
+                    const likePostElem = document.getElementById(`likePost${newsId}`)
+                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                    likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
+                    dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                });
+            } else if (emotions === null) {
+                firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                    dislikes = snapshot.val().dislikes;
+                    dislikes++;
+                }).then(() => {
+                    firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+
+                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                    dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                });
+            }
+        });
+    }
+}
+
+// sign out teacher
+function signOutTeacher() {
+    localStorage.removeItem('user');
+    document.querySelector('.main-app-teacher').style.display = 'none';
+    ILVue.logIn = false;
+    ILVue.currentUser = '';
+
+    location.reload();
+}
+
+// sign out student
+function signOutStudent() {
+    localStorage.removeItem('user');
+    document.querySelector('.main-app-student').style.display = 'none';
+    ILVue.logIn = false;
+    ILVue.currentUser = '';
+
+    location.reload();
+}
+
+// add task to database
+function add_task_db(index) {
+    const user = JSON.parse(localStorage.getItem('user'));
+
+    let nameElem = document.getElementById("name-task").value;
+    let id = ILVue.$data.tasks[index].id;
+
+    firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks/task${id}`).set({
+        name: nameElem,
+        id: id,
+    });
+}
+
+// user
+let user = JSON.parse(localStorage.getItem('user'));
+
+// todo list
+firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks/`).get().then((snapshot) => {
+    for (let key in snapshot.val()) {
+        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks/${key}`).get().then((snapshot) => {
+            let nameTask = snapshot.val().name;
+            let idTask = snapshot.val().id;
+
+            ILVue.$data.tasks.push({
+                name: nameTask,
+                id: idTask,
+            });
+        });
+    }
+});
+
