@@ -80,7 +80,7 @@ function signIn() {
           const secondNameDb = snapshot.val().secondName;
           const emailDb = snapshot.val().email;
 
-          if (emailDb == email) {
+          if (emailDb === email) {
             localStorage.setItem("emailLAR", email);
             localStorage.setItem("nameLAR", firstNameDb);
             localStorage.setItem("surnameLAR", secondNameDb);   

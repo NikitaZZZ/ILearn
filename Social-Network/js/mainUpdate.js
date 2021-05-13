@@ -35,38 +35,38 @@ function update() {
 
       forNav.innerHTML = `
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-              <img src="img/lar.png" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
-              LearnAndRead
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">
+                <img alt="icon" src="img/lar.png" width="30" height="30" class="d-inline-block align-top" loading="lazy">
+                LearnAndRead
+              </a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
 
-            <div class="collapse navbar-collapse" id="navbar">
-              <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item active">
-                  <a class="nav-link active" href="#">Главная</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="link-profile" data-bs-toggle="collapse" data-bs-target="#profileDiv">Профиль</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="link-tematics" data-bs-toggle="collapse" data-bs-target="#tematicsDiv">Тематики</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" id="link-lenta" data-bs-toggle="collapse" data-bs-target="#lentaDiv">Лента</a>
-                </li>
-              </ul>
-              <form class="d-flex">
-                <span class="navbar-text me-2" id="hello-name"></span>
-
-                <button type="button" class="btn btn-outline-success my-2 my-sm-0 ml-2" data-bs-toggle="modal" data-bs-target="#newPost">
-                  Новый пост <i class="fas fa-plus"></i>
-                </button>  
-              </form>
-            </div>
+              <div class="collapse navbar-collapse" id="navbar">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item active">
+                    <a class="nav-link active" href="#">Главная</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="link-profile" data-bs-toggle="collapse" data-bs-target="#profileDiv">Профиль</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="link-tematics" data-bs-toggle="collapse" data-bs-target="#tematicsDiv">Тематики</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="link-lenta" data-bs-toggle="collapse" data-bs-target="#lentaDiv">Лента</a>
+                  </li>
+                </ul>
+                <form class="d-flex">
+                  <span class="navbar-text me-2" id="hello-name"></span>
+  
+                  <button type="button" class="btn btn-outline-success my-2 my-sm-0 ml-2" data-bs-toggle="modal" data-bs-target="#newPost">
+                    Новый пост <i class="fas fa-plus"></i>
+                  </button>  
+                </form>
+              </div>
           </div>
         </nav>
 
@@ -233,7 +233,7 @@ function update() {
               <form>
                 <div class="input-group">
                   <input type="text" class="form-control bg-dark text-white" id="commentInput${idPost}" placeholder="Комментарий...">
-                  <button class="btn btn-outline-dark text-white" type="button" id="button-comment" onclick="postComment('${idPost}', '${firstName}', '${secondName}')">Написать</button>
+                  <button class="btn btn-outline-dark text-white" type="button" id="btn-comment" onclick="postComment('${idPost}', '${firstName}', '${secondName}')">Написать</button>
                 </div>
               </form>
             </div>
@@ -261,7 +261,7 @@ function update() {
           `;
         });
 
-        if (localStorage.getItem(`emotions${idPost}`) == 'like') {
+        if (localStorage.getItem(`emotions${idPost}`) === 'like') {
           const likePostElem = document.getElementById(`likePostIcon${idPost}`);
           const dislikePostElem = document.getElementById(`dislikePostIcon${idPost}`);
     
@@ -269,7 +269,7 @@ function update() {
     
           likePostElem.addEventListener('click', () => { console.log('помойка ебаная') });
           dislikePostElem.addEventListener('click', () => { dislikePost(idPost) });
-        } else if (localStorage.getItem(`emotions${idPost}`) == 'dislike') {
+        } else if (localStorage.getItem(`emotions${idPost}`) === 'dislike') {
           const likePostElem = document.getElementById(`likePostIcon${idPost}`);
           const dislikePostElem = document.getElementById(`dislikePostIcon${idPost}`);
     
@@ -292,7 +292,7 @@ function update() {
       firebase.database().ref(`users/`).get().then((snapshot) => {
         for (key in snapshot.val()) {
           firebase.database().ref(`users/${key}`).get().then((snapshot) => {
-            if (emailUser == snapshot.val().email) {
+            if (emailUser === snapshot.val().email) {
               let month;
 
               switch (snapshot.val().month) {
@@ -348,7 +348,7 @@ function renderTematic(tematic) {
         const month = snapshot.val().date.month;
         const year = snapshot.val().date.year;
     
-        if (tematic == tematicPost) {
+        if (tematic === tematicPost) {
           lentaDiv.innerHTML += `
             <div class="card text-white bg-dark post" style="width: 20rem;">
               <div class="card-body">
@@ -362,7 +362,7 @@ function renderTematic(tematic) {
                 <form>
                   <div class="input-group">
                     <input type="text" class="form-control bg-dark text-white" id="commentInput${idPost}" placeholder="Комментарий...">
-                    <button class="btn btn-outline-dark text-white" type="button" id="button-comment" onclick="postComment('${idPost}', '${firstName}', '${secondName}')">Написать</button>
+                    <button class="btn btn-outline-dark text-white" type="button" id="btn-comment" onclick="postComment('${idPost}', '${firstName}', '${secondName}')">Написать</button>
                   </div>
                 </form>
               </div>
@@ -395,11 +395,11 @@ function renderTematic(tematic) {
           });
         }
     
-        if (localStorage.getItem(`emotions${idPost}`) == 'like') {
+        if (localStorage.getItem(`emotions${idPost}`) === 'like') {
           const likePostElem = document.getElementById(`likePostIcon${idPost}`);
     
           likePostElem.className = 'fas fa-heart';
-        } else if (localStorage.getItem(`emotions${idPost}`) == 'dislike') {
+        } else if (localStorage.getItem(`emotions${idPost}`) === 'dislike') {
           const dislikePostElem = document.getElementById(`dislikePostIcon${idPost}`);
     
           dislikePostElem.className = 'fas fa-thumbs-down';
@@ -421,7 +421,7 @@ function postComment(idPost, name, surname) {
 }
 
 function likePost(idPost) {
-  if (localStorage.getItem(`emotions${idPost}`) == 'dislike') {
+  if (localStorage.getItem(`emotions${idPost}`) === 'dislike') {
     firebase.database().ref(`posts/${idPost}`).get().then((snapshot) => { 
       likes = snapshot.val().likes;
       likes += 1;
@@ -456,7 +456,7 @@ function likePost(idPost) {
 }
 
 function dislikePost(idPost) {
-  if (localStorage.getItem(`emotions${idPost}`) == 'like') {
+  if (localStorage.getItem(`emotions${idPost}`) === 'like') {
     firebase.database().ref(`posts/${idPost}`).get().then((snapshot) => { 
       dislikes = snapshot.val().dislikes;
       dislikes += 1;

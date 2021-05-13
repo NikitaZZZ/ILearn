@@ -132,7 +132,7 @@ Vue.component('teacher-app', {
                 </div>
                 <div class="col-sm mt-3 text-center" id="services">
                     <div class="list-group">
-                        <a href="../itests/admin.html" target="_blank" class="list-group-item list-group-item-action" aria-current="true">
+                        <a href="itests.html" target="_blank" style="cursor: pointer;" class="list-group-item list-group-item-action" aria-current="true">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
                                     <img alt="icon" src="../itests/img/pizap.png" style="border-radius: 20px; width: 30px; height: 30px;" class="d-inline-block align-text-top">
@@ -175,8 +175,340 @@ Vue.component('teacher-app', {
                     </div>
                 </div>
             </div>
+            <div id="notifications"></div>
+            
+            <div class="modal fade" id="itests" tabindex="-1">
+                <div class="modal-dialog modal-xl">
+                    <div class="modal-content">
+                        <div id="main">
+                            <div class="nav nav-pills" id="v-pills-tab" role="tablist">
+                                <a class="nav-link active" onclick="resultsStudentsList()" id="v-pills-results-students-tab" data-bs-toggle="pill" href="#results_students" role="tab" aria-controls="v-pills-results-students" aria-selected="false">Результаты тестов</a>
+                                <a class="nav-link" onclick="tests()" id="v-pills-results-students-tab" data-bs-toggle="pill" href="#tests" role="tab" aria-controls="v-pills-results-students" aria-selected="false">Тесты</a>
+                                <a class="nav-link" onclick="createTest()" id="v-pills-tests-tab" data-bs-toggle="pill" href="#createTest" role="tab" aria-controls="v-pills-tests" aria-selected="false">Создать тест</a>
+                            </div>
+                            <div class="tab-content" id="div_tests">
+                                <div class="tab-pane active" id="results_students" role="tabpanel" aria-labelledby="results-students-tab">
+                                    <div id="results_students_table"></div>
+                                </div>
+                                <div class="tab-pane fade" id="tests" role="tabpanel" aria-labelledby="tests-tab">
+                                            <div class="accordion" id="accordionExample">
+                                                <div class="card">
+                                                    <div class="card-header" id="algebraCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#algebra" aria-expanded="true" aria-controls="collapseOne">
+                                                                Алгебра <span class="badge bg-primary" id="algebra-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="algebra" class="collapse" aria-labelledby="headingOne">
+                                                        <div class="card-body"></div>
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="mathCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#math" aria-expanded="true" aria-controls="collapseOne">
+                                                                Математика <span class="badge bg-primary" id="math-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="math" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="englishCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#english" aria-expanded="true" aria-controls="collapseOne">
+                                                                Английский язык <span class="badge bg-primary" id="english-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="english" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="biologyCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#biology" aria-expanded="true" aria-controls="collapseOne">
+                                                                Биология <span class="badge bg-primary" id="biology-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="biology" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="okrworldCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#okrworld" aria-expanded="true" aria-controls="collapseOne">
+                                                                Окружающий мир <span class="badge bg-primary" id="okrworld-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="okrworld" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="geographyCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#geography" aria-expanded="true" aria-controls="collapseOne">
+                                                                География <span class="badge bg-primary" id="geography-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="geography" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="geometryCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#geometry" aria-expanded="true" aria-controls="collapseOne">
+                                                                Геометрия <span class="badge bg-primary" id="geometry-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="geometry" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="historyCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#history" aria-expanded="true" aria-controls="collapseOne">
+                                                                История <span class="badge bg-primary" id="history-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="history" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="literatureCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#literature" aria-expanded="true" aria-controls="collapseOne">
+                                                                Литература <span class="badge bg-primary" id="literature-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="literature" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="physicsCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#physics" aria-expanded="true" aria-controls="collapseOne">
+                                                                Физика <span class="badge bg-primary" id="physics-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="physics" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="chemistryCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#alchemy" aria-expanded="true" aria-controls="collapseOne">
+                                                                Химия <span class="badge bg-primary" id="alchemy-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="alchemy" class="collapse" aria-labelledby="headingOne"></div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="russianCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#russian" aria-expanded="true" aria-controls="collapseOne">
+                                                                Русский язык <span class="badge bg-primary" id="russian-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="russian" class="collapse" aria-labelledby="headingOne"></div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="obzhCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#obzh" aria-expanded="true" aria-controls="collapseOne">
+                                                                ОБЖ <span class="badge bg-primary" id="obzh-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="obzh" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="peCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#pe" aria-expanded="true" aria-controls="collapseOne">
+                                                                Физическая культура <span class="badge bg-primary" id="pe-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="pe" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="techCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#tech" aria-expanded="true" aria-controls="collapseOne">
+                                                                Технология <span class="badge bg-primary" id="tech-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="tech" class="collapse" aria-labelledby="headingOne">
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="socialScienceCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#obsh" aria-expanded="true" aria-controls="collapseOne">
+                                                                Обществознание <span class="badge bg-primary" id="obsh-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="obsh" class="collapse" aria-labelledby="headingOne">
+                        
+                                                    </div>
+                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header" id="itCard">
+                                                        <h5 class="mb-0">
+                                                            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#it" aria-expanded="true" aria-controls="collapseOne">
+                                                                Информатика <span class="badge bg-primary" id="it-counter">0</span>
+                                                            </button>
+                                                        </h5>
+                                                    </div>
+                                                
+                                                    <div id="it" class="collapse" aria-labelledby="headingOne"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                <div class="tab-pane fade" id="createTest" role="tabpanel">
+                                            <div class="container-fluid" id="create_test">
+                                                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                                                   <li class="nav-item">
+                                                        <button class="btn btn-outline-primary" id="plus-question-icon" data-bs-toggle="collapse" data-bs-target="#pills-plus" style="float: left;">Форма создания вопроса</button>
+                                                        <button class="btn btn-outline-success" data-bs-toggle="collapse" data-bs-target="#pills-create" id="create-test-admin-btn">Создать тест</button>
+                                                   </li>
+                                                </ul>
+                        
+                                                <div class="container-fluid" id="questions"></div>
+                                       
+                                                <div class="collapse show" id="pills-plus">
+                                                    <div class="tab-pane" role="tabpanel" aria-labelledby="pills-plus-tab">
+                                                        <div class="form" id="create-question">
+                                                            <div class="form-group row">
+                                                                <h3>Вопрос</h3>
+                                                                <div class="col-sm-10">
+                                                                    <input type="text" placeholder="Текст вопроса" class="form-control" id="input_question">
+                                                                </div>
+                                                            </div>
+                                                            <fieldset class="form-group">
+                                                                <div class="row mt-3">
+                                                                    <legend class="col-form-label col-sm-2 pt-0">Варианты ответа</legend>
+                                                                    <div class="col-sm-10">
+                                                                        <div class="form-check">
+                                                                            <input class="form-check-input" type="radio" name="gridRadios" id="option_radio1" value="option1">
+                                                                            <input type="text" placeholder="Первый вариант ответа" class="form-control" id="inputText1">
+                                                                            <br>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="gridRadios" id="option_radio2" value="option1">
+                                                                        <input type="text" placeholder="Второй вариант ответа" class="form-control" id="inputText2">
+                                                                        <br>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="gridRadios" id="option_radio3" value="option1">
+                                                                        <input type="text" placeholder="Третий вариант ответа" class="form-control" id="inputText3">
+                                                                        <br>
+                                                                    </div>
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="gridRadios" id="option_radio4" value="option1">
+                                                                        <input type="text" placeholder="Четвертый вариант ответа" class="form-control" id="inputText4">
+                                                                        <br>
+                                                                    </div>
+                                                                </div>
+                                                                <legend class="col-form-label col-sm-2 pt-0">Изображение: </legend>
+                                                                <div class="col-sm-10">
+                                                                    <div class="form">
+                                                                        <div class="form-group">
+                                                                            <input type="file" id="files" />
+                                                                            <div class="custom-control custom-checkbox">
+                                                                                <input type="checkbox" class="custom-control-input" id="checkbox_file">
+                                                                                <label class="custom-control-label" id="checkbox_file_label" for="checkbox_file">Без изображения</label>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </fieldset>
+                                                            <div class="form-group row">
+                                                                <div class="col-sm-10">
+                                                                    <button type="submit" class="btn btn-outline-success" onclick="create_question()">Создать вопрос</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="collapse" id="pills-create">
+                                                    <div class="tab-pane" role="tabpanel" aria-labelledby="pills-plus-tab">
+                                                        <div class="container-fluid">
+                                                            <label class="my-1 mr-2 mt-2 d-flex justify-content-center" for="klassGeneralTest">Класс</label>
+                                                            <input type="text" placeholder="Класс (Без буквы)" class="form-control w-25 m-auto" id="klassGeneralTest">
+                                                    
+                                                            <label class="my-1 mr-2 mt-2 d-flex justify-content-center" for="subjectGeneralTest">Предмет</label>
+                                                            <div class="w-25" style="margin: 0 auto;">
+                                                                <select class="form-select my-1 mr-sm-2" id="subjectGeneralTest">
+                                                                    <option>Алгебра</option>
+                                                                    <option>Математика</option>
+                                                                    <option>Английский язык</option>
+                                                                    <option>Биология</option>
+                                                                    <option>Окружающий мир</option>
+                                                                    <option>География</option>
+                                                                    <option>Геометрия</option>
+                                                                    <option>История</option>
+                                                                    <option>Литература</option>
+                                                                    <option>Физика</option>
+                                                                    <option>Химия</option>
+                                                                    <option>Русский язык</option>
+                                                                    <option>ОБЖ</option>
+                                                                    <option>Физическая культура</option>
+                                                                    <option>Технология</option>
+                                                                    <option>Обществознание</option>
+                                                                    <option>Информатика</option>
+                                                                </select>
+                                                            </div>
+                                                            <label for="themeGeneralTest" class="my-1 mr-2 mt-2 d-flex justify-content-center">Тема</label>
+                                                            <input type="text" placeholder="Тема вопроса" class="form-control w-25 m-auto" id="themeGeneralTest">
+                        
+                                                            <div class="d-flex justify-content-center mt-3">
+                                                                <button class="btn btn-outline-success" onclick="createGeneralTest()">Создать</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
            
-
             <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="myClass" aria-labelledby="offcanvasWithBothOptionsLabel">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title" id="myClassTitle">Мой класс: 9Г</h5>
@@ -247,10 +579,12 @@ Vue.component('student-app', {
                     <div class="modal-content">
                         <div id="chatUI">
                             <ol class="list-group" style="padding: 0;" id="chatsTeachers"></ol>     
+                            <ol class="list-group" style="padding: 0;" id="chatsStudents"></ol>     
                         </div>
                     </div>
                 </div>
             </div>
+            <div id="notifications"></div>
         </div>
     `
 });
@@ -622,7 +956,6 @@ function startStudentApp() {
         firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}/isOnline`).set(true);
     }
 
-    console.log(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}`);
     firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase().trim()} ${user.klass.toLowerCase().trim()}`).get().then((snapshot) => {
         const fullName = snapshot.val().fullName;
         const school = snapshot.val().school;
@@ -639,6 +972,7 @@ function startStudentApp() {
 function innerNews() {
     const user = JSON.parse(localStorage.getItem('user'));
 
+    // global news
     firebase.database().ref(`school${user.school}/news/`).on('child_added', (data) => {
         const nameNews = data.val().nameNews;
         const textNews = data.val().textNews;
@@ -663,7 +997,7 @@ function innerNews() {
                         <form>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
-                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}')">Написать</button>
+                                <button class="btn btn-outline-success" type="button" id="btn-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}')">Написать</button>
                             </div>
                         </form>
                     </div>
@@ -688,7 +1022,7 @@ function innerNews() {
                         <form>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
-                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}')">Написать</button>
+                                <button class="btn btn-outline-success" type="button" id="btn-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}')">Написать</button>
                             </div>
                         </form>
                     </div>
@@ -701,34 +1035,54 @@ function innerNews() {
             `;
         }
 
+        // comments
         firebase.database().ref(`school${user.school}/news/${newsId}/comments/`).on('child_added', (snapshot) => {
             const fullName = snapshot.val().fullName;
-                    const comment = snapshot.val().comment;
+            const comment = snapshot.val().comment;
 
-                    const commentsDiv = document.getElementById(`innerComments${newsId}`);
-                    commentsDiv.innerHTML += `
-                        <div class="card comment m-auto mb-2">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
-                                <p class="card-text">${comment}</p>
-                            </div>
-                        </div>
+            const commentsDiv = document.getElementById(`innerComments${newsId}`);
+            commentsDiv.innerHTML += `
+                <div class="card comment m-auto mb-2">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
+                        <p class="card-text">${comment}</p>
+                    </div>
+                </div>
             `;
         });
 
-        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
-            let emotions = snapshot.val();
+        switch (user.who) {
+            case 'student':
+                firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase()} ${userClass.toLowerCase()}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val()
 
-            if (emotions === 'like') {
-                const likePostElem = document.getElementById(`likePostIcon${newsId}`);
+                    if (emotions === 'like') {
+                        const likePostElem = document.getElementById(`likePostIcon${newsId}`)
 
-                likePostElem.className = 'fas fa-heart';
-            } else if (emotions === 'dislike') {
-                const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`);
+                        likePostElem.className = 'fas fa-heart'
+                    } else if (emotions === 'dislike') {
+                        const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`)
 
-                dislikePostElem.className = 'fas fa-thumbs-down';
-            }
-        });
+                        dislikePostElem.className = 'fas fa-thumbs-down'
+                    }
+                })
+                ; break;
+            case "teacher":
+                firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val()
+
+                    if (emotions === 'like') {
+                        const likePostElem = document.getElementById(`likePostIcon${newsId}`)
+
+                        likePostElem.className = 'fas fa-heart'
+                    } else if (emotions === 'dislike') {
+                        const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`)
+
+                        dislikePostElem.className = 'fas fa-thumbs-down'
+                    }
+                })
+            ; break;
+        }
     });
 
     try {
@@ -737,6 +1091,7 @@ function innerNews() {
         userClass = `${user.klass[0]}${user.klass = user.klass[1].toUpperCase()}`
     }
 
+    // news from class
     firebase.database().ref(`school${user.school}/news${userClass}/`).on('child_added', (data) => {
         const nameNews = data.val().nameNews;
         const textNews = data.val().textNews;
@@ -761,7 +1116,7 @@ function innerNews() {
                         <form>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
-                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}', '${userClass}')">Написать</button>
+                                <button class="btn btn-outline-success" type="button" id="btn-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}', '${userClass}')">Написать</button>
                             </div>
                         </form>
                     </div>
@@ -786,7 +1141,7 @@ function innerNews() {
                         <form>
                             <div class="input-group">
                                 <input type="text" class="form-control" id="commentInput${newsId}" placeholder="Комментарий...">
-                                <button class="btn btn-outline-success" type="button" id="button-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}', '${userClass}')">Написать</button>
+                                <button class="btn btn-outline-success" type="button" id="btn-comment" onclick="postComment('${newsId}', '${user.fullName}', '${user.school}', '${userClass}')">Написать</button>
                             </div>
                         </form>
                     </div>
@@ -800,34 +1155,52 @@ function innerNews() {
         }
 
         firebase.database().ref(`school${user.school}/news${userClass}/${newsId}/comments/`).on('child_added', (snapshot) => {
-            console.log('work?')
-                    const fullName = snapshot.val().fullName;
-                    const comment = snapshot.val().comment;
+            const fullName = snapshot.val().fullName;
+            const comment = snapshot.val().comment;
 
-                    const commentsDiv = document.getElementById(`innerComments${newsId}`);
-                    commentsDiv.innerHTML += `
-                        <div class="card comment m-auto mb-2">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
-                                <p class="card-text">${comment}</p>
-                            </div>
-                        </div>
-                    `;
+            const commentsDiv = document.getElementById(`innerComments${newsId}`);
+            commentsDiv.innerHTML += `
+                <div class="card comment m-auto mb-2">
+                    <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-muted">${fullName}</h6>
+                        <p class="card-text">${comment}</p>
+                    </div>
+                </div>
+            `;
         });
 
-        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
-            let emotions = snapshot.val();
+        switch (user.who) {
+            case 'student':
+                firebase.database().ref(`school${user.school}/students/student${user.fullName.toLowerCase()} ${userClass.toLowerCase()}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val()
 
-            if (emotions === 'like') {
-                const likePostElem = document.getElementById(`likePostIcon${newsId}`);
+                    if (emotions === 'like') {
+                        const likePostElem = document.getElementById(`likePostIcon${newsId}`)
 
-                likePostElem.className = 'fas fa-heart';
-            } else if (emotions === 'dislike') {
-                const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`);
+                        likePostElem.className = 'fas fa-heart'
+                    } else if (emotions === 'dislike') {
+                        const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`)
 
-                dislikePostElem.className = 'fas fa-thumbs-down';
-            }
-        });
+                        dislikePostElem.className = 'fas fa-thumbs-down'
+                    }
+                })
+            ; break;
+            case "teacher":
+                firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val()
+
+                    if (emotions === 'like') {
+                        const likePostElem = document.getElementById(`likePostIcon${newsId}`)
+
+                        likePostElem.className = 'fas fa-heart'
+                    } else if (emotions === 'dislike') {
+                        const dislikePostElem = document.getElementById(`dislikePostIcon${newsId}`)
+
+                        dislikePostElem.className = 'fas fa-thumbs-down'
+                    }
+                })
+            ; break;
+        }
     });
 }
 
@@ -935,158 +1308,320 @@ function postComment(newsId, fullName, school, klass = '') {
 function likePost(newsId, school, klass = '') {
     const user = JSON.parse(localStorage.getItem('user'));
 
-    if (klass === '') {
-        firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
-            let emotions = snapshot.val();
+    switch (user.who) {
+        case 'student':
+            if (klass === '') {
+                firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val();
 
-            if (emotions === 'dislike') {
-                firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
-                    likes = snapshot.val().likes;
-                    likes++;
+                    if (emotions === 'dislike') {
+                        firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                            likes = snapshot.val().likes;
+                            likes++;
 
-                    dislikes = snapshot.val().dislikes;
-                    dislikes--;
-                }).then(() => {
-                    firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
-                    firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
+                            dislikes = snapshot.val().dislikes;
+                            dislikes--;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+                            firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
 
-                    const likePostElem = document.getElementById(`likePost${newsId}`)
-                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
 
-                    likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
-                    dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
+                            likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+                            dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
 
-                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                            firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).set('like');
+                        });
+                    } else if (emotions === null) {
+                        firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                            likes = snapshot.val().likes;
+                            likes++;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+
+                            firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).set('like');
+                        });
+                    }
                 });
-            } else if (emotions === null) {
-                firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
-                    likes = snapshot.val().likes;
-                    likes++;
-                }).then(() => {
-                    firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+            } else if (klass !== '') {
+                firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val();
+                    if (emotions === 'dislike') {
+                        firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                            likes = snapshot.val().likes;
+                            likes++;
 
-                    const likePostElem = document.getElementById(`likePost${newsId}`)
-                    likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+                            dislikes = snapshot.val().dislikes;
+                            dislikes--;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
 
-                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                            likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+                            dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).set('like');
+                        });
+                    } else if (emotions === null) {
+                        firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                            likes = snapshot.val().likes;
+                            likes++;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+
+                            firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).set('like');
+                        });
+                    }
                 });
             }
-        });
-    } else if (klass !== '') {
-        firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
-            let emotions = snapshot.val();
-            if (emotions === 'dislike') {
-                console.log('asd');
-                firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
-                    likes = snapshot.val().likes;
-                    likes++;
+        ; break;
 
-                    dislikes = snapshot.val().dislikes;
-                    dislikes--;
-                }).then(() => {
-                    firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
-                    firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+        case 'teacher':
+            if (klass === '') {
+                firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val();
 
-                    const likePostElem = document.getElementById(`likePost${newsId}`)
-                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                    if (emotions === 'dislike') {
+                        firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                            likes = snapshot.val().likes;
+                            likes++;
 
-                    likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
-                    dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
+                            dislikes = snapshot.val().dislikes;
+                            dislikes--;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+                            firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
 
-                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                            likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+                            dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                        });
+                    } else if (emotions === null) {
+                        firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                            likes = snapshot.val().likes;
+                            likes++;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                        });
+                    }
                 });
-            } else if (emotions === null) {
-                firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
-                    likes = snapshot.val().likes;
-                    likes++;
-                }).then(() => {
-                    firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+            } else if (klass !== '') {
+                firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val();
+                    if (emotions === 'dislike') {
+                        firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                            likes = snapshot.val().likes;
+                            likes++;
 
-                    const likePostElem = document.getElementById(`likePost${newsId}`)
-                    likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+                            dislikes = snapshot.val().dislikes;
+                            dislikes--;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
 
-                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                            likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+                            dislikePostElem.innerHTML = `<i class="far fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                        });
+                    } else if (emotions === null) {
+                        firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                            likes = snapshot.val().likes;
+                            likes++;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            likePostElem.innerHTML = `<i class="fas fa-heart"></i> ${likes}`;
+
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('like');
+                        });
+                    }
                 });
             }
-        });
+        ; break;
     }
 }
 
 // dislike post
 function dislikePost(newsId, school, klass = '') {
-    if (klass === '') {
-        firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
-            let emotions = snapshot.val();
-            if (emotions === 'like') {
-                firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
-                    dislikes = snapshot.val().dislikes;
-                    dislikes++;
+    const user = JSON.parse(localStorage.getItem('user'));
 
-                    likes = snapshot.val().likes;
-                    likes--;
-                }).then(() => {
-                    firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
-                    firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
+    switch (user.who) {
+        case 'student':
+            if (klass === '') {
+                firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val();
+                    if (emotions === 'like') {
+                        firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                            dislikes = snapshot.val().dislikes;
+                            dislikes++;
 
-                    const likePostElem = document.getElementById(`likePost${newsId}`)
-                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                            likes = snapshot.val().likes;
+                            likes--;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+                            firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
 
-                    likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
-                    dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
 
-                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                            likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
+                            dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).set('dislike');
+                        });
+                    } else if (emotions === null) {
+                        firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                            dislikes = snapshot.val().dislikes;
+                            dislikes++;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
+
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                            dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).set('dislike');
+                        });
+                    }
                 });
-            } else if (emotions === null) {
-                firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
-                    dislikes = snapshot.val().dislikes;
-                    dislikes++;
-                }).then(() => {
-                    firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
+            } else if (klass !== '') {
+                firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val();
 
-                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
-                    dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+                    if (emotions === 'like') {
+                        firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                            dislikes = snapshot.val().dislikes;
+                            dislikes++;
 
-                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                            likes = snapshot.val().likes;
+                            likes--;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                            likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
+                            dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                        });
+                    } else if (emotions === null) {
+                        firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                            dislikes = snapshot.val().dislikes;
+                            dislikes++;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                            dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/students/student${user.fullName.toLowerCase()} ${user.klass.toLowerCase()}/likes/emotions${newsId}/`).set('dislike');
+                        });
+                    }
                 });
             }
-        });
-    } else if (klass !== '') {
-        firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
-            let emotions = snapshot.val();
+        ; break;
+        case 'teacher':
+            if (klass === '') {
+                firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val();
+                    if (emotions === 'like') {
+                        firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                            dislikes = snapshot.val().dislikes;
+                            dislikes++;
 
-            if (emotions === 'like') {
-                firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
-                    dislikes = snapshot.val().dislikes;
-                    dislikes++;
+                            likes = snapshot.val().likes;
+                            likes--;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news/${newsId}/likes`).set(likes);
+                            firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
 
-                    likes = snapshot.val().likes;
-                    likes--;
-                }).then(() => {
-                    firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
-                    firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
 
-                    const likePostElem = document.getElementById(`likePost${newsId}`)
-                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                            likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
+                            dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
 
-                    likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
-                    dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                        });
+                    } else if (emotions === null) {
+                        firebase.database().ref(`school${school}/news/${newsId}`).get().then((snapshot) => {
+                            dislikes = snapshot.val().dislikes;
+                            dislikes++;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news/${newsId}/dislikes`).set(dislikes);
 
-                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                            dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                        });
+                    }
                 });
-            } else if (emotions === null) {
-                firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
-                    dislikes = snapshot.val().dislikes;
-                    dislikes++;
-                }).then(() => {
-                    firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+            } else if (klass !== '') {
+                firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}/`).get().then((snapshot) => {
+                    let emotions = snapshot.val();
 
-                    const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
-                    dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+                    if (emotions === 'like') {
+                        firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                            dislikes = snapshot.val().dislikes;
+                            dislikes++;
 
-                    firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                            likes = snapshot.val().likes;
+                            likes--;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/likes`).set(likes);
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+
+                            const likePostElem = document.getElementById(`likePost${newsId}`)
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+
+                            likePostElem.innerHTML = `<i class="far fa-heart"></i> ${likes}`;
+                            dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                        });
+                    } else if (emotions === null) {
+                        firebase.database().ref(`school${school}/news${klass}/${newsId}`).get().then((snapshot) => {
+                            dislikes = snapshot.val().dislikes;
+                            dislikes++;
+                        }).then(() => {
+                            firebase.database().ref(`school${school}/news${klass}/${newsId}/dislikes`).set(dislikes);
+
+                            const dislikePostElem = document.getElementById(`dislikePost${newsId}`)
+                            dislikePostElem.innerHTML = `<i class="fas fa-thumbs-down"></i> ${dislikes}`;
+
+                            firebase.database().ref(`school${school}/teachers/teacher${user.code}/likes/emotions${newsId}`).set('dislike');
+                        });
+                    }
                 });
             }
-        });
+        ; break;
     }
 }
 
