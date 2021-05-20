@@ -838,7 +838,7 @@ function resultsStudentsList() {
         console.log(data.val());
     });
 
-        db.collection("results").get().then((querySnapshot) => {
+    db.collection("results").get().then((querySnapshot) => {
         querySnapshot.forEach((doc) => {
             let result_arr = doc.data().result;
             let idTeacher = doc.data().result[0].id_teacher;
@@ -1065,16 +1065,36 @@ function createTest() {
     let subject = document.getElementById("subject").value;
     let theme = document.getElementById("theme").value;
     let klass = document.getElementById("klass").value;
+    let timerNeed = document.getElementById('timerNeed');
+    let timerMinutes = document.getElementById('timerMinutes').value;
+    let timerSeconds = document.getElementById('timerSeconds').value;
 
-    console.log(idTest);
-  
-    firebase.database().ref(`school${user.school}/tests/${klass}/test${idTest}`).set({
-        subject: subject,
-        theme: theme,
-        klass: klass,
-        idTest: idTest,
-        questions: questions_massive
-    });
+    if (timerNeed.checked) {
+        if (timerSeconds === "") {
+            timerSeconds = 0;
+        } else if (timerMinutes === "") {
+            timerMinutes = 0;
+        }
+
+        firebase.database().ref(`school${user.school}/tests/${klass}/test${idTest}`).set({
+            subject: subject,
+            theme: theme,
+            klass: klass,
+            idTest: idTest,
+            questions: questions_massive,
+            timer: true,
+            timerMinutes: timerMinutes,
+            timerSeconds: timerSeconds
+        });
+    } else {
+        firebase.database().ref(`school${user.school}/tests/${klass}/test${idTest}`).set({
+            subject: subject,
+            theme: theme,
+            klass: klass,
+            idTest: idTest,
+            questions: questions_massive,
+        });
+    }
 
     Swal.fire({
         position: 'top-end',

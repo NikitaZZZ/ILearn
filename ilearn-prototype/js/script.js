@@ -550,7 +550,7 @@ Vue.component('student-app', {
                 </div>
                 <div class="col-sm mt-3 text-center" id="services">
                     <div class="list-group">
-                        <a href="../itests/admin.html" target="_blank" class="list-group-item list-group-item-action" aria-current="true">
+                        <a href="tests.html" target="_blank" class="list-group-item list-group-item-action" aria-current="true">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
                                     <img alt="icon" src="../itests/img/pizap.png" style="border-radius: 20px; width: 30px; height: 30px;" class="d-inline-block align-text-top">
@@ -578,8 +578,7 @@ Vue.component('student-app', {
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div id="chatUI">
-                            <ol class="list-group" style="padding: 0;" id="chatsTeachers"></ol>     
-                            <ol class="list-group" style="padding: 0;" id="chatsStudents"></ol>     
+                            <ol class="list-group" style="padding: 0;" id="chats"></ol>
                         </div>
                     </div>
                 </div>
@@ -1675,4 +1674,3 @@ firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks
         });
     }
 });
-

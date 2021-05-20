@@ -348,6 +348,13 @@
                                         <label for="theme" class="my-1 mr-2 mt-2 d-flex justify-content-center">Тема</label>
                                         <input type="text" placeholder="Тема вопроса" class="form-control w-25 m-auto" id="theme">
 
+                                        <div class="d-flex justify-content-center mt-2 form-check">
+                                            <input type="checkbox" placeholder="Таймер на тест" class="form-check-input" id="timerNeed" onchange="timerTest(this)">
+                                            <label for="timerNeed" class="form-check-label ml-2">Таймер на тест</label>
+                                        </div>
+
+                                        <div id="inputTimerDiv"></div>
+
                                         <div class="d-flex justify-content-center mt-3">
                                             <button class="btn btn-outline-success" onclick="createTest()">Создать</button>
                                         </div>
@@ -375,6 +382,23 @@
     <script src="js/firebase.js"></script>
     <script src="js/admin.js"></script>
     <script>
+        const inputTimer = document.getElementById('inputTimerDiv');
+
+        function timerTest(elem) {
+            if (elem.checked) {
+                inputTimer.className = 'd-flex mt-2 justify-content-center form-group';
+                inputTimer.innerHTML = `
+                  <div class="d-flex mb-0 justify-content-center form-group">
+                     <input type="text" class="w-25 ml-2 text-center" placeholder="Минуты" id="timerMinutes">
+                     <input type="text" class="w-25 ml-2 text-center" placeholder="Секунды" id="timerSeconds">
+                  </div>
+               `;
+            } else {
+                inputTimer.className = '';
+                inputTimer.innerHTML = ``;
+            }
+        }
+
         // Удаление теста
         function delete_test(id) {
             db.collection('tests').doc(`${id}`).delete().then(() => {

@@ -37,12 +37,15 @@ function chatWithStudents() {
     });
 }
 
+// Чат ученика и учителей
 function chatWithTeachersAndStudents() {
     let user = JSON.parse(localStorage.getItem('user'));
 
+    document.getElementById('chatUI').innerHTML = ``;
+
     firebase.database().ref(`school${user.school}/students/`).on('child_added', (data) => {
         if (user.fullName === data.val().fullName) {} else if (user.fullName !== data.val().fullName) {
-            document.getElementById('chatsStudents').innerHTML += `
+            document.getElementById('chatUI').innerHTML += `
                 <li class="list-group-item d-flex justify-content-between align-items-start" style="cursor: pointer" onclick="chatStudentAndTeacher('${data.val().fullName}', '${user.fullName}', '${data.val().klass}')">
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">${data.val().fullName}</div>
@@ -53,8 +56,30 @@ function chatWithTeachersAndStudents() {
         }
     });
 
+    firebase.database().ref(`school${user.school}/students/`).on('value', (snapshot) => {
+        for (let key in snapshot.val()) {
+            firebase.database().ref(`school${user.school}/students/${key}`).on('value', (snapshot) => {
+                try {
+                    const isOnline = snapshot.val().isOnline;
+                    let isOnlineSpan = document.getElementById(`isOnline${snapshot.val().fullName}`);
+
+                    switch (isOnline) {
+                        case true:
+                            isOnlineSpan.innerHTML = `В сети`;
+                            isOnlineSpan.className = `badge bg-success rounded-pill`;
+                            break;
+                        case false:
+                            isOnlineSpan.innerHTML = `Не в сети`;
+                            isOnlineSpan.className = `badge bg-secondary rounded-pill`;
+                            break;
+                    }
+                } catch {}
+            });
+        }
+    });
+
     firebase.database().ref(`school${user.school}/teachers/`).on('child_added', (data) => {
-        document.getElementById('chatsTeachers').innerHTML += `
+        document.getElementById('chatUI').innerHTML += `
             <li class="list-group-item d-flex justify-content-between align-items-start" style="cursor: pointer" onclick="chatStudentAndTeacher('${data.val().fullName}', '${user.fullName}', '${data.val().teacherClass}')">
                 <div class="ms-2 me-auto">
                     <div class="fw-bold">${data.val().fullName}</div>
@@ -465,4 +490,3 @@ function sendMsgToStudent(username, name, studentKlass) {
 
     document.getElementById('messageInput').value = '';
 }
-
