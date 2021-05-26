@@ -39,7 +39,10 @@ window.onload = () => { tests(); }
 
 // Enter tests for teacher
 function tests() {
-    document.querySelectorAll('.card').innerHTML = ``;
+    const subjectDivs = document.querySelectorAll('.subjectDivs');
+    for (let i = 0; i < subjectDivs.length; i++) {
+        subjectDivs[i].innerHTML = ``;
+    }
 
     tests_mas = [];
 
@@ -825,6 +828,8 @@ function tests() {
 
             question_number_admin += 1;
         }
+
+        question_number_admin = 0;
     });
 }
 
@@ -834,124 +839,38 @@ function resultsStudentsList() {
     results_students_inner_adm.innerHTML = '';
     number_student = 0;
 
-    firebase.database().ref(`school${user.school}/tests/`).on('child_added', (data) => {
-        console.log(data.val());
-    });
+    firebase.database().ref(`school${user.school}/tests/${user.myClass}`).on('value', (snapshot) => {
+        for (let key in snapshot.val()) {
+            firebase.database().ref(`school${user.school}/tests/${user.myClass}/${key}/results`).on('child_added', (data) => {
+                const appraisal = data.val().appraisal;
+                const fullNameStudent = data.val().fullName;
+                const result = data.val().result;
+                const idTest = data.val().idTest;
 
-    db.collection("results").get().then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-            let result_arr = doc.data().result;
-            let idTeacher = doc.data().result[0].id_teacher;
-            let date = doc.data().date;
-            let idTeacherLc = localStorage.getItem("id_teacher");
+                number_student++;
 
-            try {
-                if (idTeacher === idTeacherLc) {
-                    for (let i = 0; i < result_arr.length; i++) {
-                        if (result_arr[i].result === "Правильно") {
-                            results_students_mas_right.push({
-                                result: 'Правильно',
-                                id: i
-                            });
-                        } else if (result_arr[i].result === "Неправильно") {
-                            results_students_mas_wrong.push({
-                                result: 'Неправильно',
-                                id: i
-                            });
-                        }
-                    }
-                    
-                    number_numer += 1;
-                    number_student += 1;
-
-                    const nameFb = result_arr[0].name[0].toUpperCase() + result_arr[0].name.slice(1);
-                    const surnameFb = result_arr[0].surname[0].toUpperCase() + result_arr[0].surname.slice(1);
-        
-                    results_students_inner_adm.innerHTML += `
-                        <tr id="resultTest${result_arr[0].id}">
-                            <td>${number_student}</td>
-                            <td class="resultStudentName">${nameFb} ${surnameFb}</td>
-                            <td>${result_arr[0].klass}</td>
-                            <td>${result_arr[0].test_subject}</td>
-                            <td>${result_arr[0].test_theme}</td>
-                            <td id="date">${date}</td>
-                            <td id="result-inner-${number_numer}"></td>
-                            <td id="delete-test">
-                                <button class="btn btn-outline-danger" onclick="delete_result_test(${result_arr[0].id}, '${result_arr[0].name}', '${result_arr[0].surname}')" id="delete-test">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    `;
-        
-                    for (let i = 0; i < result_arr.length; i++) {
-                        try {
-                            if (results_students_mas_right[i].id == i) {
-                                // Всего ответов
-                                all_results = results_students_mas_right.length + results_students_mas_wrong.length;
-            
-                                // Алгоритм вычисления процента от числа
-                                percent_result = Math.round((results_students_mas_right.length / all_results) * 100);
-            
-                                if (percent_result >= 90) {
-                                    appraisal = 5;
-                                } else if (percent_result >= 70) {
-                                    appraisal = 4;
-                                } else if (percent_result >= 50) {
-                                    appraisal = 3;
-                                } else {
-                                    appraisal = 2;
-                                }  
-                            } 
-                        } catch { }
-        
-                        try {
-                            if (results_students_mas_wrong[i].id == i) {
-                                // Всего ответов
-                                all_results = results_students_mas_right.length + results_students_mas_wrong.length;
-            
-                                // Алгоритм вычисления процента от числа
-                                percent_result = Math.round((results_students_mas_right.length / all_results) * 100);
-            
-                                if (percent_result >= 90) {
-                                    appraisal = 5;
-                                } else if (percent_result >= 70) {
-                                    appraisal = 4;
-                                } else if (percent_result >= 50) {
-                                    appraisal = 3;
-                                } else if (percent_result < 50) {
-                                    appraisal = 2;
-                                }
-                            }
-                        } catch { }
-        
-                        let res_inner = document.getElementById(`result-inner-${number_numer}`)
-        
-                        res_inner.innerHTML = `
-                            <tr>
-                                <td id="${random_number}">
-                                    <div id="appersial${number_numer}">
-                                        <p id="text-appersial">${appraisal}</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        `;
-        
-                        let appersial_elem = document.getElementById(`appersial${number_numer}`);
-                        switch (appraisal) {
-                            case 2: appersial_elem.className = "appersial alert alert-danger"; break;
-                            case 3: appersial_elem.className = "appersial alert alert-warning"; break;
-                            case 4: appersial_elem.className = "appersial alert alert-primary"; break;
-                            case 5: appersial_elem.className = "appersial alert alert-success"; break;
-                        }
-                    }
-        
-                    result_arr = [];
-                    results_students_mas_right = [];
-                    results_students_mas_wrong = [];
-                }
-            } catch {}
-        });
+                results_students_inner_adm.innerHTML += `
+                    <tr id="resultTest${idTest}">
+                        <td>${number_student}</td>
+                        <td>${fullNameStudent}</td>
+                        <td>${result[0].klass}</td>
+                        <td>${result[0].test_subject}</td>
+                        <td>${result[0].test_theme}</td>
+                        <td>${result[0].date}</td>
+                        <td id="result-inner-${number_student}">
+                            <div id="appraisalDiv" class="appraisal alert alert-danger">
+                                <p id="text-appraisal">${appraisal}</p>
+                            </div>
+                        </td>
+                        <td id="delete-test">
+                            <button id="delete-test-btn" class="btn btn-outline-danger" onclick="deleteResult(${idTest}, '${fullNameStudent}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
     });
 }
 
@@ -1199,4 +1118,21 @@ function deleteTest(id, klass, subject) {
             techCounter.innerHTML = tech_counter
             ; break;
     }
+}
+
+function deleteResult(idTest) {
+    Swal.fire({
+        title: 'Предупреждение!',
+        icon: 'warning',
+        text: 'Если вы удалите результат - ученик сможет пройти тест еще раз!',
+        showCancelButton: true,
+        cancelButtonText: 'Отмена',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            if (result.isConfirmed) {
+                firebase.database().ref(`school${user.school}/tests/${user.myClass}/test${idTest}/results`).remove();
+                document.getElementById(`resultTest${idTest}`).innerHTML = '';
+            }
+        }
+    });
 }
