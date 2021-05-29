@@ -602,10 +602,13 @@ Vue.component('task', {
     },
 
     template: `
-      <li class="list-group-item d-flex justify-content-between align-items-center" id="task">
-        {{ data.name }}
-        <span class="badge bg-danger rounded-pill" style="cursor: pointer;" @click="task_done()"><i class="fas fa-trash"></i></span>
-      </li>
+      <div class="card text-dark bg-warning mb-3">
+        <div class="card-body">
+          <h5 class="card-text">{{ data.name }}</h5>
+    
+          <button class="btn btn-outline-danger" style="cursor: pointer; float: right;" @click="task_done()"><i class="fas fa-trash"></i></button>
+        </div>
+      </div>
     `
 });
 
@@ -662,6 +665,7 @@ let ILVue = new Vue({
                         school: result.value.school,
                         teacherClass: result.value.yourClass,
                         teacherId: teacherId,
+                        isOnline: true,
                     });
 
                     Swal.fire({
@@ -784,6 +788,7 @@ let ILVue = new Vue({
                         school: result.value.school,
                         klass: result.value.klass,
                         studentId: studentId,
+                        isOnline: true,
                     });
 
                     localStorage.setItem('user', JSON.stringify({

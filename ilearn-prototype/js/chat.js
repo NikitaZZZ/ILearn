@@ -9,7 +9,7 @@ function chatWithStudents() {
                 <div class="ms-2 me-auto">
                     <div class="fw-bold">${data.val().fullName}</div>
                 </div>
-                <span class="badge secondary rounded-pill" id="isOnline${data.val().fullName}"></span>
+                <span class="badge secondary rounded-pill" id="isOnline${data.val().studentId}"></span>
             </li>
         `;
     });
@@ -19,7 +19,7 @@ function chatWithStudents() {
             firebase.database().ref(`school${user.school}/students/${key}`).on('value', (snapshot) => {
                 try {
                     const isOnline = snapshot.val().isOnline;
-                    let isOnlineSpan = document.getElementById(`isOnline${snapshot.val().fullName}`);
+                    let isOnlineSpan = document.getElementById(`isOnline${snapshot.val().studentId}`);
 
                     switch (isOnline) {
                         case true:
@@ -50,7 +50,7 @@ function chatWithTeachersAndStudents() {
                     <div class="ms-2 me-auto">
                         <div class="fw-bold">${data.val().fullName}</div>
                     </div>
-                    <span class="badge secondary rounded-pill" id="isOnline${data.val().fullName}"></span>
+                    <span class="badge secondary rounded-pill" id="isOnline${data.val().studentId}"></span>
                 </li>
             `;
         }
@@ -61,7 +61,7 @@ function chatWithTeachersAndStudents() {
             firebase.database().ref(`school${user.school}/students/${key}`).on('value', (snapshot) => {
                 try {
                     const isOnline = snapshot.val().isOnline;
-                    let isOnlineSpan = document.getElementById(`isOnline${snapshot.val().fullName}`);
+                    let isOnlineSpan = document.getElementById(`isOnline${snapshot.val().studentId}`);
 
                     switch (isOnline) {
                         case true:
@@ -84,7 +84,7 @@ function chatWithTeachersAndStudents() {
                 <div class="ms-2 me-auto">
                     <div class="fw-bold">${data.val().fullName}</div>
                 </div>
-                <span class="badge secondary rounded-pill" id="isOnline${data.val().fullName}"></span>
+                <span class="badge secondary rounded-pill" id="isOnline${data.val().teacherId}"></span>
             </li>
         `;
     });
@@ -94,7 +94,7 @@ function chatWithTeachersAndStudents() {
             firebase.database().ref(`school${user.school}/teachers/${key}`).on('value', (snapshot) => {
                 try {
                     const isOnline = snapshot.val().isOnline;
-                    let isOnlineSpan = document.getElementById(`isOnline${snapshot.val().fullName}`);
+                    let isOnlineSpan = document.getElementById(`isOnline${snapshot.val().teacherId}`);
 
                     switch (isOnline) {
                         case true:
@@ -310,7 +310,6 @@ function renderMessagesTeacher(username, name, klass) {
                     document.getElementById(`checkMessage${messageId}`).className = 'text-primary';
                     firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${klass.toLowerCase().trim()}/messagesFrom${name}/${key}/checkMessage`).set(checkMsg);
                 } else if (checkMsg === true) {
-                    console.log(`checkMessage${messageId}`);
                     document.getElementById(`checkMessage${messageId}`).className = 'text-primary';
                 }
             });
