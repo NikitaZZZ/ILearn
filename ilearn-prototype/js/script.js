@@ -690,6 +690,7 @@ let ILVue = new Vue({
                     document.querySelector('.main-app-teacher').style.display = 'block';
                     startTeacherApp();
                     innerNews();
+                    chatWithStudents();
                 }
             });
         },
@@ -748,6 +749,7 @@ let ILVue = new Vue({
                         document.querySelector('.main-app-teacher').style.display = 'block';
                         startTeacherApp();
                         innerNews();
+                        chatWithStudents();
                     }
                 }).catch((error) => {
                     console.log(error);
@@ -803,6 +805,7 @@ let ILVue = new Vue({
                     ILVue.currentUser = 'student';
                     document.querySelector('.main-app-student').style.display = 'block';
                     startStudentApp();
+                    chatWithTeachersAndStudents();
                 }
             });
         },
@@ -863,6 +866,7 @@ let ILVue = new Vue({
                             ILVue.currentUser = 'student';
                             document.querySelector('.main-app-student').style.display = 'block';
                             startStudentApp();
+                            chatWithTeachersAndStudents();
                         }
                     });
                 }
