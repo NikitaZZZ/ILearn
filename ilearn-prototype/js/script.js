@@ -2,7 +2,7 @@
 const date = new Date();
 
 // window onload
-window.onload = () => {
+onload = () => {
     let user = JSON.parse(localStorage.getItem('user'));
 
     if (user == null) {
@@ -43,7 +43,9 @@ window.onload = () => {
         ILVue.logIn = true;
         ILVue.currentUser = 'teacher';
         document.querySelector('.main-app-teacher').style.display = 'block';
+        document.getElementById('myClassTitle').innerHTML += user.myClass;
         startTeacherApp();
+        getToDoList();
         innerNews();
         chatWithStudents();
     } else if (user.who === 'student') {
@@ -511,7 +513,7 @@ Vue.component('teacher-app', {
            
             <div class="offcanvas offcanvas-start" data-bs-scroll="true" tabindex="-1" id="myClass" aria-labelledby="offcanvasWithBothOptionsLabel">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="myClassTitle">Мой класс: 9Г</h5>
+                    <h5 class="offcanvas-title" id="myClassTitle">Мой класс: </h5>
                     <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
                 </div>
                 <div class="offcanvas-body">
@@ -688,7 +690,11 @@ let ILVue = new Vue({
                     ILVue.logIn = true;
                     ILVue.currentUser = 'teacher';
                     document.querySelector('.main-app-teacher').style.display = 'block';
+                    
+                    document.getElementById('myClassTitle').innerHTML += result.value.yourClass;
+
                     startTeacherApp();
+                    getToDoList();
                     innerNews();
                     chatWithStudents();
                 }
@@ -699,7 +705,7 @@ let ILVue = new Vue({
             Swal.fire({
                 title: 'Вход в аккаунт',
                 html: `
-                    <input type="text" id="fullNameTeacherSignIn" class="swal2-input" placeholder="Имя и фамилия">
+                    <input type="text" id="fullNameTeacherSignIn" class="swal2-input" placeholder="Имя и Фамилия">
                     <input type="text" id="codeTeacherSignIn" class="swal2-input" placeholder="Код">
                     <input type="text" id="schoolTeacherSignIn" class="swal2-input" placeholder="Школа">
                     <input type="text" id="klassTeacherSignIn" class="swal2-input" placeholder="Ваш класс">`,
@@ -747,7 +753,11 @@ let ILVue = new Vue({
                         ILVue.logIn = true;
                         ILVue.currentUser = 'teacher';
                         document.querySelector('.main-app-teacher').style.display = 'block';
+
+                        document.getElementById('myClassTitle').innerHTML += result.value.myClass;
+
                         startTeacherApp();
+                        getToDoList();
                         innerNews();
                         chatWithStudents();
                     }
@@ -805,6 +815,7 @@ let ILVue = new Vue({
                     ILVue.currentUser = 'student';
                     document.querySelector('.main-app-student').style.display = 'block';
                     startStudentApp();
+                    innerNews();
                     chatWithTeachersAndStudents();
                 }
             });
@@ -866,6 +877,7 @@ let ILVue = new Vue({
                             ILVue.currentUser = 'student';
                             document.querySelector('.main-app-student').style.display = 'block';
                             startStudentApp();
+                            innerNews();
                             chatWithTeachersAndStudents();
                         }
                     });
@@ -1666,20 +1678,22 @@ function add_task_db(index) {
     });
 }
 
-// user
-let user = JSON.parse(localStorage.getItem('user'));
+function getToDoList() {
+    // user
+    let user = JSON.parse(localStorage.getItem('user'));
 
-// todo list
-firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks/`).get().then((snapshot) => {
-    for (let key in snapshot.val()) {
-        firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks/${key}`).get().then((snapshot) => {
-            let nameTask = snapshot.val().name;
-            let idTask = snapshot.val().id;
+    // todo list
+    firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks/`).get().then((snapshot) => {
+        for (let key in snapshot.val()) {
+            firebase.database().ref(`school${user.school}/teachers/teacher${user.code}/tasks/${key}`).get().then((snapshot) => {
+                let nameTask = snapshot.val().name;
+                let idTask = snapshot.val().id;
 
-            ILVue.$data.tasks.push({
-                name: nameTask,
-                id: idTask,
+                ILVue.$data.tasks.push({
+                    name: nameTask,
+                    id: idTask,
+                });
             });
-        });
-    }
-});
+        }
+    });
+}

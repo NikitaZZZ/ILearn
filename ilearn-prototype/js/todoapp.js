@@ -27,14 +27,14 @@ Vue.component('task', {
     },
  
     template: `
-      <div class="card text-dark bg-warning mb-3" style="max-width: 18rem;">
-        <div class="card-header">{{ data.title }}</div>
-        <div class="card-body">
-          <p class="card-text" v-if="data.desc !== ''">{{ data.desc }}</p>
+        <div class="card text-dark bg-warning mb-3" style="max-width: 18rem;">
+            <div class="card-header">{{ data.title }}</div>
+            <div class="card-body">
+                <p class="card-text" v-if="data.desc !== ''">{{ data.desc }}</p>
 
-          <button class="btn btn-outline-success task__done" @click="task_done()"><i class="fas fa-check" id="check"></i></button>
+                <button class="btn btn-outline-success task__done" @click="task_done()"><i class="fas fa-check" id="check"></i></button>
+            </div>
         </div>
-      </div>
     `
 });
 

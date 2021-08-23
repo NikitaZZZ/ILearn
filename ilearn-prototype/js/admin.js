@@ -858,7 +858,7 @@ function resultsStudentsList() {
                         <td>${result[0].test_theme}</td>
                         <td>${result[0].date}</td>
                         <td id="result-inner-${number_student}">
-                            <div id="appraisalDiv" class="appraisal alert alert-danger">
+                            <div id="appraisalDiv${idTest}" class="appraisal alert">
                                 <p id="text-appraisal">${appraisal}</p>
                             </div>
                         </td>
@@ -869,6 +869,13 @@ function resultsStudentsList() {
                         </td>
                     </tr>
                 `;
+
+                switch (appraisal) {
+                    case 2: document.getElementById(`appraisalDiv${idTest}`).className = "appraisal alert alert-danger"; break;
+                    case 3: document.getElementById(`appraisalDiv${idTest}`).className = "appraisal alert alert-warning"; break;
+                    case 4: document.getElementById(`appraisalDiv${idTest}`).className = "appraisal alert alert-primary"; break;
+                    case 5: document.getElementById(`appraisalDiv${idTest}`).className = "appraisal alert alert-success"; break;
+                }
             });
         }
     });
@@ -984,9 +991,11 @@ function createTest() {
     let subject = document.getElementById("subject").value;
     let theme = document.getElementById("theme").value;
     let klass = document.getElementById("klass").value;
-    let timerNeed = document.getElementById('timerNeed');
-    let timerMinutes = document.getElementById('timerMinutes').value;
-    let timerSeconds = document.getElementById('timerSeconds').value;
+    try {
+        let timerNeed = document.getElementById('timerNeed');
+        let timerMinutes = document.getElementById('timerMinutes').value;
+        let timerSeconds = document.getElementById('timerSeconds').value;
+    } catch {}
 
     if (timerNeed.checked) {
         if (timerSeconds === "") {
