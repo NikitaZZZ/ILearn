@@ -604,7 +604,7 @@ Vue.component('task', {
     },
 
     template: `
-      <div class="card text-dark bg-warning mb-3">
+      <div class="card text-dark mb-3">
         <div class="card-body">
           <h5 class="card-text">{{ data.name }}</h5>
     
@@ -924,6 +924,8 @@ let ILVue = new Vue({
 
         // Удалить задание
         delete_task(name, id_task) {
+            let user = JSON.parse(localStorage.getItem('user'));
+
             const index = this.tasks.findIndex(item => item.id === id_task);
             this.tasks.splice(index, 1);
 

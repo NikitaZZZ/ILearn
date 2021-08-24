@@ -27,7 +27,7 @@ Vue.component('task', {
     },
  
     template: `
-        <div class="card text-dark bg-warning mb-3" style="max-width: 18rem;">
+        <div class="card mb-3" style="max-width: 18rem;">
             <div class="card-header">{{ data.title }}</div>
             <div class="card-body">
                 <p class="card-text" v-if="data.desc !== ''">{{ data.desc }}</p>
