@@ -1,0 +1,148 @@
+a { text-decoration: none; }
+
+#il-itests, #il-chat, 
+#il-to-do-app, #profile-class { cursor: pointer; }
+
+.likePost { color: red; }
+
+#task {
+    background: none;
+    color: #000;
+    border: 1px solid #000;
+}
+
+#name-task {
+    background: none;
+    color: #000;
+}
+
+#table_tests, #create-test { margin-top: 2%; }
+
+#question { margin-bottom: 1%; margin-top: 2%; }
+
+#test { padding: 3%; }
+
+#option1_div, #option2_div,
+#option3_div, #option4_div,
+#correct_answer_info, #back, #send_test,
+#title, #checkbox_admin_panel,
+#form_reg, #title, #reg_teacher { margin-top: 1%; }
+
+#send_test, .swal2-cancel { margin-left: 1%; }
+
+#test { margin: 1%; }
+
+#number-test, #subject-test,
+#school-test, #klass-test, #theme-test { padding-top: 1.7%; }
+
+#results-students-tab, #tests-tab, #back-tab {
+    color: #A850BE;
+}
+
+#reg-new-student:hover {
+    background: #A850BE;
+    color: #fff;
+    transition: 0.5s ease;
+}
+
+#v-pills-results-students-tab, #v-pills-create-test-tab, #v-pills-tests-tab, #v-back {
+    border-radius: 0;
+}
+
+#v-pills-results-students-tab:hover, #v-pills-tests-tab:hover, #v-back:hover,
+#v-pills-create-test-tab:hover {
+    background: #A850BE;
+    color: #fff;
+    transition: 0.3s ease;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background: #A850BE;
+    color: #fff;
+    transition: 0.3s ease;
+}
+
+#main {
+    margin-top: 1%;
+}
+
+#link-tabs {
+    margin-left: 1%;
+}
+
+#create-test-btn {
+    margin-top: 1.5vh;
+}
+
+#create-test-admin-btn {
+    margin-left: 1vh;
+}
+
+#test-footer {
+    padding-top: 0;
+    border-top: 0;
+    margin-left: 1vh;
+    background: #fff;
+}
+
+.close-test {
+    color: #fff;
+    margin-top: 1.4vh;
+    background: #343a40;
+}
+
+#send-test { margin-top: 1.4vh; }
+
+#hr { height: 0.2vh; }
+
+.appraisal {
+    width: 3em;
+    height: 3em;
+    margin: 0;
+    padding: 0.6em 1.2em 0;
+    border-radius: 30px;
+}
+
+#text-appersial {
+    text-align: center;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#testsCollapse {
+    background: #fff;
+}
+
+#inputTimerDiv {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+#plus-question-icon {
+    border: 1px solid #A850BE;
+    color: #A850BE;
+}
+
+#plus-question-icon:hover {
+    background: #A850BE;
+    color: #fff;
+}
+
+#btn-tooltip:hover {
+    cursor: pointer;
+}
+
+.search {
+    width: 20em;
+    margin-bottom: 1em;
+}
+
+#create-question-text, #create-question-form,
+#pills-tab {
+    width: 400px;
+    margin: auto;
+}
