@@ -14,3 +14,5 @@ firebase.analytics();
 
 // Рандомное число
 const getRandId = () => Math.floor(Math.random() * Number.MAX_SAFE_INTEGER).toString();
+
+let storageRef = firebase.storage().ref();

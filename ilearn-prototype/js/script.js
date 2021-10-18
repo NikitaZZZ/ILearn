@@ -137,7 +137,7 @@ Vue.component('teacher-app', {
                         <a href="itests.html" target="_blank" style="cursor: pointer;" class="list-group-item list-group-item-action" aria-current="true">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
-                                    <img alt="icon" src="../itests/img/pizap.png" style="border-radius: 20px; width: 30px; height: 30px;" class="d-inline-block align-text-top">
+                                    <img alt="icon" src="public/pizap.png" style="border-radius: 20px; width: 30px; height: 30px;" class="d-inline-block align-text-top">
                                     ITests
                                 </h5>
                                 <small class="text-muted">Открыть</small>
@@ -147,7 +147,7 @@ Vue.component('teacher-app', {
                         <a data-bs-toggle="modal" data-bs-target="#todo" style="cursor: pointer" class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
-                                    <img alt="icon" src="../todo-list/public/bg.png" style="border-radius: 20px; width: 30px; height: 30px;" class="d-inline-block align-text-top">
+                                    <img alt="icon" src="public/bg.png" style="border-radius: 20px; width: 30px; height: 30px;" class="d-inline-block align-text-top">
                                     To Do List
                                 </h5>
                                 <small class="text-muted">Открыть</small>
@@ -157,7 +157,7 @@ Vue.component('teacher-app', {
                         <a data-bs-toggle="modal" data-bs-target="#chat" style="cursor: pointer" class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
                                 <h5 class="mb-1">
-                                    <img alt="icon" src="../Social-Network/img/lar_black.png" style="width: 30px; height: 30px;" class="d-inline-block align-text-top">
+                                    <img alt="icon" src="public/lar_black.png" style="width: 30px; height: 30px;" class="d-inline-block align-text-top">
                                     LAR Chat
                                 </h5>
                                 <small class="text-muted">Открыть</small>
