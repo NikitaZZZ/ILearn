@@ -510,7 +510,7 @@ function chatTeacherAndStudent(username, myName, studentKlass) {
     `;
 
     document.addEventListener('keydown', (e) => {
-        if (e.code = "Enter") {
+        if (e.code == "Enter") {
             sendMsgToStudent(username, myName, studentKlass);
         }
     });
@@ -614,7 +614,7 @@ function chatStudentAndTeacher(username, myName, studentKlass) {
     `;
 
     document.addEventListener('keydown', (e) => {
-        if (e.code = "Enter") {
+        if (e.code == "Enter") {
             sendMsgToTeacher(username, myName, studentKlass);
         }
     });
