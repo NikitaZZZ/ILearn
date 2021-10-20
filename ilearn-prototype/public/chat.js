@@ -1,3 +1,5 @@
+let user = JSON.parse(localStorage.getItem('user'));
+
 function chatWithStudents() {
     let user = JSON.parse(localStorage.getItem('user'));
 
@@ -117,48 +119,92 @@ function renderMessagesStudent(username, name, klass) {
     let user = JSON.parse(localStorage.getItem('user'));
     firebase.database().ref(`school${user.school}/students/student${name.toLowerCase().trim()} ${klass.toLowerCase().trim()}/messagesFrom${username}`).orderByChild('date/minutes').on('child_added', (data) => {
         try {
-            const fullName = data.val().fullName;
-            const message = data.val().message;
+            if (data.val().voiceId) {
+                let voiceId = data.val().voiceId;
+                let voiceMsg = data.val().voiceMsg;
+                let fullName = data.val().fullName;
+                let date = data.val().date;
 
-            const hour = data.val().date.hour;
-            const minutes = data.val().date.minutes;
-            const seconds = data.val().date.seconds;
+                setTimeout(() => {
+                    console.log(`voices/${username}/${voiceMsg}`);
 
-            const day = data.val().date.day;
-            const month = data.val().date.month;
-            const year = data.val().date.year;
-
-            let messageId = data.val().messageId;
-
-            document.getElementById('messages').innerHTML += `
-                <div class="card">
-                    <div class="card-body">
-                        <span class="text-secondary" id="checkMessage${messageId}" style="float: right"><i class="fas fa-check-double"></i></span>
-                        <h5 class="card-title">${fullName}</h5>
-                        <span class="text-muted" style="float: right;">${hour}:${minutes}:${seconds}</span>
-                        <span class="text-muted" style="margin-right: 0.5em; float: right;">${day}.${month}.${year}</span>
-                        <p class="card-text">${message} <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
-                    </div>
-                </div>
-            `;
-
-            if (fullName !== user.fullName && document.getElementById('chat').className !== 'modal fade show') {
-                document.getElementById('notifications').innerHTML += `
-                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: -1">
-                        <div class="toast hide" id="notification${messageId}" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header">
-                                <strong class="me-auto">${fullName}</strong>
-                                <small>${hour}:${minutes}:${seconds}</small>
-                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                    storageRef.child(`voices/${username}/${voiceMsg}`).getDownloadURL().then((url) => {
+                        document.getElementById('messages').innerHTML += `
+                            <div class="card">
+                                <div class="card-body">
+                                    <span class="text-secondary" id="checkMessage${voiceId}" style="float: right"><i class="fas fa-check-double"></i></span>
+                                    <h5 class="card-title">${username}</h5>
+                                    <span class="text-muted" style="float: right;">${date.hour}:${date.minutes}:${date.seconds}</span>
+                                    <span class="text-muted" style="margin-right: 0.5em; float: right;">${date.day}.${date.month}.${date.year}</span>
+                                    <p class="card-text"><audio src="${url}" controls></audio> <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
+                                </div>
                             </div>
-                            <div class="toast-body">
-                                ${message}
+                        `;
+                    }).catch((error) => { console.log(error); });
+
+                    if (fullName !== user.fullName && document.getElementById('chat').className !== 'modal fade show') {
+                        document.getElementById('notifications').innerHTML += `
+                            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: -1">
+                                <div class="toast hide" id="notification${voiceId}" role="alert" aria-live="assertive" aria-atomic="true">
+                                    <div class="toast-header">
+                                        <strong class="me-auto">${fullName}</strong>
+                                        <small>${date.hour}:${date.minutes}:${date.seconds}</small>
+                                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                                    </div>
+                                    <div class="toast-body">
+                                        Голосовое сообщение
+                                    </div>
+                                </div>
                             </div>
+                        `;
+    
+                        $(`#notification${voiceId}`).toast('show');
+                    }
+                }, 2000);
+            } else {
+                const fullName = data.val().fullName;
+                const message = data.val().message;
+
+                const hour = data.val().date.hour;
+                const minutes = data.val().date.minutes;
+                const seconds = data.val().date.seconds;
+
+                const day = data.val().date.day;
+                const month = data.val().date.month;
+                const year = data.val().date.year;
+
+                let messageId = data.val().messageId;
+
+                document.getElementById('messages').innerHTML += `
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="text-secondary" id="checkMessage${messageId}" style="float: right"><i class="fas fa-check-double"></i></span>
+                            <h5 class="card-title">${fullName}</h5>
+                            <span class="text-muted" style="float: right;">${hour}:${minutes}:${seconds}</span>
+                            <span class="text-muted" style="margin-right: 0.5em; float: right;">${day}.${month}.${year}</span>
+                            <p class="card-text">${message} <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
                         </div>
                     </div>
                 `;
 
-                $(`#notification${messageId}`).toast('show');
+                if (fullName !== user.fullName && document.getElementById('chat').className !== 'modal fade show') {
+                    document.getElementById('notifications').innerHTML += `
+                        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: -1">
+                            <div class="toast hide" id="notification${messageId}" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <strong class="me-auto">${fullName}</strong>
+                                    <small>${hour}:${minutes}:${seconds}</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                                </div>
+                                <div class="toast-body">
+                                    ${message}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    $(`#notification${messageId}`).toast('show');
+                }
             }
         } catch { }
     });
@@ -183,48 +229,53 @@ function renderMessagesStudent(username, name, klass) {
 
     firebase.database().ref(`school${user.school}/students/student${name.toLowerCase().trim()} ${klass.toLowerCase().trim()}/messagesTo${username}`).orderByChild('date/minutes').on('child_added', (data) => {
         try {
-            const fullName = data.val().fullName;
-            const message = data.val().message;
+            if (data.val().voiceId) {
+                let voiceId = data.val().voiceId;
+                let voiceMsg = data.val().voiceMsg;
+                let date = data.val().date;
 
-            const hour = data.val().date.hour;
-            const minutes = data.val().date.minutes;
-            const seconds = data.val().date.seconds;
+                setTimeout(() => {
+                    console.log(`voices/${name}/${voiceMsg}`);
 
-            const day = data.val().date.day;
-            const month = data.val().date.month;
-            const year = data.val().date.year;
-
-            let messageId = data.val().messageId;
-
-            document.getElementById('messages').innerHTML += `
-                <div class="card">
-                    <div class="card-body">
-                        <span class="text-secondary" id="checkMessage${messageId}" style="float: right"><i class="fas fa-check-double"></i></span>
-                        <h5 class="card-title">${fullName}</h5>
-                        <span class="text-muted" style="float: right;">${hour}:${minutes}:${seconds}</span>
-                        <span class="text-muted" style="margin-right: 0.5em; float: right;">${day}.${month}.${year}</span>
-                        <p class="card-text">${message} <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
-                    </div>
-                </div>
-            `;
-
-            if (fullName !== user.fullName && document.getElementById('chat').className !== 'modal fade show') {
-                document.getElementById('notifications').innerHTML += `
-                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: -1">
-                        <div class="toast hide" id="notification${messageId}" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header">
-                                <strong class="me-auto">${fullName}</strong>
-                                <small>${hour}:${minutes}:${seconds}</small>
-                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                    storageRef.child(`voices/${name}/${voiceMsg}`).getDownloadURL().then((url) => {
+                        document.getElementById('messages').innerHTML += `
+                            <div class="card">
+                                <div class="card-body">
+                                    <span class="text-secondary" id="checkMessage${voiceId}" style="float: right"><i class="fas fa-check-double"></i></span>
+                                    <h5 class="card-title">${name}</h5>
+                                    <span class="text-muted" style="float: right;">${date.hour}:${date.minutes}:${date.seconds}</span>
+                                    <span class="text-muted" style="margin-right: 0.5em; float: right;">${date.day}.${date.month}.${date.year}</span>
+                                    <p class="card-text"><audio src="${url}" controls></audio> <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
+                                </div>
                             </div>
-                            <div class="toast-body">
-                                ${message}
-                            </div>
+                        `;
+                    }).catch((error) => { console.log(error); });
+                }, 2000);
+            } else {
+                const fullName = data.val().fullName;
+                const message = data.val().message;
+
+                const hour = data.val().date.hour;
+                const minutes = data.val().date.minutes;
+                const seconds = data.val().date.seconds;
+
+                const day = data.val().date.day;
+                const month = data.val().date.month;
+                const year = data.val().date.year;
+
+                let messageId = data.val().messageId;
+
+                document.getElementById('messages').innerHTML += `
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="text-secondary" id="checkMessage${messageId}" style="float: right"><i class="fas fa-check-double"></i></span>
+                            <h5 class="card-title">${fullName}</h5>
+                            <span class="text-muted" style="float: right;">${hour}:${minutes}:${seconds}</span>
+                            <span class="text-muted" style="margin-right: 0.5em; float: right;">${day}.${month}.${year}</span>
+                            <p class="card-text">${message} <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
                         </div>
                     </div>
                 `;
-
-                $(`#notification${messageId}`).toast('show');
             }
         } catch { }
     });
@@ -253,48 +304,92 @@ function renderMessagesTeacher(username, name, klass) {
 
     firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${klass.toLowerCase().trim()}/messagesFrom${name}`).orderByChild('date/minutes').on('child_added', (data) => {
         try {
-            const fullName = data.val().fullName;
-            const message = data.val().message;
+            if (data.val().voiceId) {
+                let voiceId = data.val().voiceId;
+                let voiceMsg = data.val().voiceMsg;
+                let fullName = data.val().fullName;
+                let date = data.val().date;
 
-            const hour = data.val().date.hour;
-            const minutes = data.val().date.minutes;
-            const seconds = data.val().date.seconds;
+                setTimeout(() => {
+                    console.log(`voices/${username}/${voiceMsg}`);
 
-            const day = data.val().date.day;
-            const month = data.val().date.month;
-            const year = data.val().date.year;
-
-            const messageId = data.val().messageId;
-
-            document.getElementById('messages').innerHTML += `
-                <div class="card">
-                    <div class="card-body">
-                        <span class="text-secondary" id="checkMessage${messageId}" style="float: right"><i class="fas fa-check-double"></i></span>
-                        <h5 class="card-title">${fullName}</h5>
-                        <span class="text-muted" style="float: right;">${hour}:${minutes}:${seconds}</span>
-                        <span class="text-muted" style="margin-right: 0.5em; float: right;">${day}.${month}.${year}</span>
-                        <p class="card-text">${message} <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
-                    </div>
-                </div>
-            `;
-
-            if (fullName !== user.fullName && document.getElementById('chat').className !== 'modal fade show') {
-                document.getElementById('notifications').innerHTML += `
-                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: -1">
-                        <div class="toast hide" id="notification${messageId}" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header">
-                                <strong class="me-auto">${fullName}</strong>
-                                <small>${hour}:${minutes}:${seconds}</small>
-                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                    storageRef.child(`voices/${username}/${voiceMsg}`).getDownloadURL().then((url) => {
+                        document.getElementById('messages').innerHTML += `
+                            <div class="card">
+                                <div class="card-body">
+                                    <span class="text-secondary" id="checkMessage${voiceId}" style="float: right"><i class="fas fa-check-double"></i></span>
+                                    <h5 class="card-title">${username}</h5>
+                                    <span class="text-muted" style="float: right;">${date.hour}:${date.minutes}:${date.seconds}</span>
+                                    <span class="text-muted" style="margin-right: 0.5em; float: right;">${date.day}.${date.month}.${date.year}</span>
+                                    <p class="card-text"><audio src="${url}" controls></audio> <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
+                                </div>
                             </div>
-                            <div class="toast-body">
-                                ${message}
+                        `;
+                    }).catch((error) => { console.log(error); });
+
+                    if (fullName !== user.fullName && document.getElementById('chat').className !== 'modal fade show') {
+                        document.getElementById('notifications').innerHTML += `
+                            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: -1">
+                                <div class="toast hide" id="notification${voiceId}" role="alert" aria-live="assertive" aria-atomic="true">
+                                    <div class="toast-header">
+                                        <strong class="me-auto">${fullName}</strong>
+                                        <small>${date.hour}:${date.minutes}:${date.seconds}</small>
+                                        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                                    </div>
+                                    <div class="toast-body">
+                                        Голосовое сообщение
+                                    </div>
+                                </div>
                             </div>
+                        `;
+    
+                        $(`#notification${voiceId}`).toast('show');
+                    }
+                }, 2000);
+            } else {
+                const fullName = data.val().fullName;
+                const message = data.val().message;
+
+                const hour = data.val().date.hour;
+                const minutes = data.val().date.minutes;
+                const seconds = data.val().date.seconds;
+
+                const day = data.val().date.day;
+                const month = data.val().date.month;
+                const year = data.val().date.year;
+
+                const messageId = data.val().messageId;
+
+                document.getElementById('messages').innerHTML += `
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="text-secondary" id="checkMessage${messageId}" style="float: right"><i class="fas fa-check-double"></i></span>
+                            <h5 class="card-title">${fullName}</h5>
+                            <span class="text-muted" style="float: right;">${hour}:${minutes}:${seconds}</span>
+                            <span class="text-muted" style="margin-right: 0.5em; float: right;">${day}.${month}.${year}</span>
+                            <p class="card-text">${message} <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
                         </div>
                     </div>
                 `;
 
-                $(`#notification${messageId}`).toast('show');
+                if (fullName !== user.fullName && document.getElementById('chat').className !== 'modal fade show') {
+                    document.getElementById('notifications').innerHTML += `
+                        <div class="position-fixed bottom-0 end-0 p-3" style="z-index: -1">
+                            <div class="toast hide" id="notification${messageId}" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <strong class="me-auto">${fullName}</strong>
+                                    <small>${hour}:${minutes}:${seconds}</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                                </div>
+                                <div class="toast-body">
+                                    ${message}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    $(`#notification${messageId}`).toast('show');
+                }
             }
         } catch { }
     });
@@ -318,48 +413,53 @@ function renderMessagesTeacher(username, name, klass) {
 
     firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${klass.toLowerCase().trim()}/messagesTo${name}`).orderByChild('date/minutes').on('child_added', (data) => {
         try {
-            const fullName = data.val().fullName;
-            const message = data.val().message;
+            if (data.val().voiceId) {
+                let voiceId = data.val().voiceId;
+                let voiceMsg = data.val().voiceMsg;
+                let date = data.val().date;
 
-            const hour = data.val().date.hour;
-            const minutes = data.val().date.minutes;
-            const seconds = data.val().date.seconds;
+                setTimeout(() => {
+                    console.log(`voices/${name}/${voiceMsg}`);
 
-            const day = data.val().date.day;
-            const month = data.val().date.month;
-            const year = data.val().date.year;
-
-            const messageId = data.val().messageId;
-
-            document.getElementById('messages').innerHTML += `
-                <div class="card">
-                    <div class="card-body">
-                        <span class="text-secondary" id="checkMessage${messageId}" style="float: right"><i class="fas fa-check-double"></i></span>
-                        <h5 class="card-title">${fullName}</h5>
-                        <span class="text-muted" style="float: right;">${hour}:${minutes}:${seconds}</span>
-                        <span class="text-muted" style="margin-right: 0.5em; float: right;">${day}.${month}.${year}</span>
-                        <p class="card-text">${message} <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
-                    </div>
-                </div>
-            `;
-
-            if (fullName !== user.fullName && document.getElementById('chat').className !== 'modal fade show') {
-                document.getElementById('notifications').innerHTML += `
-                    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: -1">
-                        <div class="toast hide" id="notification${messageId}" role="alert" aria-live="assertive" aria-atomic="true">
-                            <div class="toast-header">
-                                <strong class="me-auto">${fullName}</strong>
-                                <small>${hour}:${minutes}:${seconds}</small>
-                                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+                    storageRef.child(`voices/${name}/${voiceMsg}`).getDownloadURL().then((url) => {
+                        document.getElementById('messages').innerHTML += `
+                            <div class="card">
+                                <div class="card-body">
+                                    <span class="text-secondary" id="checkMessage${voiceId}" style="float: right"><i class="fas fa-check-double"></i></span>
+                                    <h5 class="card-title">${name}</h5>
+                                    <span class="text-muted" style="float: right;">${date.hour}:${date.minutes}:${date.seconds}</span>
+                                    <span class="text-muted" style="margin-right: 0.5em; float: right;">${date.day}.${date.month}.${date.year}</span>
+                                    <p class="card-text"><audio src="${url}" controls></audio> <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
+                                </div>
                             </div>
-                            <div class="toast-body">
-                                ${message}
-                            </div>
+                        `;
+                    }).catch((error) => { console.log(error); });
+                }, 2000);
+            } else {
+                const fullName = data.val().fullName;
+                const message = data.val().message;
+
+                const hour = data.val().date.hour;
+                const minutes = data.val().date.minutes;
+                const seconds = data.val().date.seconds;
+
+                const day = data.val().date.day;
+                const month = data.val().date.month;
+                const year = data.val().date.year;
+
+                const messageId = data.val().messageId;
+
+                document.getElementById('messages').innerHTML += `
+                    <div class="card">
+                        <div class="card-body">
+                            <span class="text-secondary" id="checkMessage${messageId}" style="float: right"><i class="fas fa-check-double"></i></span>
+                            <h5 class="card-title">${fullName}</h5>
+                            <span class="text-muted" style="float: right;">${hour}:${minutes}:${seconds}</span>
+                            <span class="text-muted" style="margin-right: 0.5em; float: right;">${day}.${month}.${year}</span>
+                            <p class="card-text">${message} <span class="position-absolute top-0 start-100 translate-middle p-2 badge"></span></p>
                         </div>
                     </div>
                 `;
-
-                $(`#notification${messageId}`).toast('show');
             }
         } catch { }
     });
@@ -394,6 +494,7 @@ function chatTeacherAndStudent(username, myName, studentKlass) {
 
         <div class="input-group" id="sendMsgDiv">
             <input type="text" id="messageInput" class="form-control" placeholder="Сообщение">
+            <button class="btn btn-primary" id="send-vm"><i class="fas fa-microphone"></i></button>
             <button class="btn btn-success" id="sendMsg" onclick="sendMsgToStudent('${username}', '${myName}', '${studentKlass}')">Отправить</button>
         </div> 
     `;
@@ -408,6 +509,82 @@ function chatTeacherAndStudent(username, myName, studentKlass) {
         </li>
     `;
 
+    document.addEventListener('keydown', (e) => {
+        if (e.code = "Enter") {
+            sendMsgToStudent(username, myName, studentKlass);
+        }
+    });
+
+    const date = new Date();
+
+    navigator.mediaDevices.getUserMedia({ audio: true})
+        .then(stream => {
+            const mediaRecorder = new MediaRecorder(stream);
+            let voices_counter = 0;
+            let voices = [];
+            let voice_id = getRandId();
+
+            // mousedown (start record vm)
+            document.querySelector('#send-vm').addEventListener('mousedown', function () {
+                mediaRecorder.start();
+
+                this.className = "btn btn-dark";
+                console.log('record start');
+            });
+
+            // phone touch
+            document.querySelector('#send-vm').addEventListener('touchstart', function () {
+                mediaRecorder.start();
+
+                this.className = "btn btn-dark";
+                console.log('record start');
+            });
+
+            // send voice msg to storage and db
+            mediaRecorder.addEventListener("dataavailable", function (event) {
+                let hour = date.getHours();
+                let minutes = date.getMinutes();
+                let seconds = date.getSeconds();
+                let day = date.getDate();
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear();
+
+                voices.push(event.data);
+
+                storageRef.child(`voices/${username}/${myName}${day}${month}${year}${hour}${minutes}${seconds}`).put(voices[voices_counter]).then(() => {
+                    console.log("Uploaded a blob!");
+                });
+
+                firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesFrom${myName}/${voice_id}`).set({
+                    fullName: myName,
+                    voiceMsg: `${myName}${day}${month}${year}${hour}${minutes}${seconds}`,
+                    voiceId: voice_id,
+                    date: {
+                        hour: hour,
+                        minutes: minutes,
+                        seconds: seconds,
+                        day: day,
+                        month: month,
+                        year: year,
+                    }
+                });
+
+                voices_counter++;
+            });
+
+            // mouseup (end record vm)
+            document.querySelector('#send-vm').addEventListener('mouseup', function () {
+                mediaRecorder.stop();
+                this.className = "btn btn-primary";
+            });
+
+            // phone touch
+            document.querySelector('#send-vm').addEventListener('touchend', function () {
+                mediaRecorder.stop();
+                this.className = "btn btn-primary";
+            });
+        });
+
     renderMessagesTeacher(`${username}`, `${myName}`, `${studentKlass}`);
 }
 
@@ -421,6 +598,7 @@ function chatStudentAndTeacher(username, myName, studentKlass) {
 
         <div class="input-group" id="sendMsgDiv">
             <input type="text" id="messageInput" class="form-control" placeholder="Сообщение">
+            <button class="btn btn-primary" id="send-vm"><i class="fas fa-microphone"></i></button>
             <button class="btn btn-success" id="sendMsg" onclick="sendMsgToTeacher('${username}', '${myName}', '${studentKlass}')">Отправить</button>
         </div> 
     `;
@@ -435,6 +613,64 @@ function chatStudentAndTeacher(username, myName, studentKlass) {
         </li>
     `;
 
+    document.addEventListener('keydown', (e) => {
+        if (e.code = "Enter") {
+            sendMsgToTeacher(username, myName, studentKlass);
+        }
+    });
+
+    const date = new Date();
+
+    navigator.mediaDevices.getUserMedia({ audio: true})
+        .then(stream => {
+            const mediaRecorder = new MediaRecorder(stream);
+            let voices_counter = 0;
+            let voices = [];
+            let voice_id = getRandId();
+
+            document.querySelector('#send-vm').addEventListener('mousedown', () => {
+                mediaRecorder.start();
+
+                console.log('record start');
+            });
+
+            mediaRecorder.addEventListener("dataavailable", (event) => {
+                let hour = date.getHours();
+                let minutes = date.getMinutes();
+                let seconds = date.getSeconds();
+                let day = date.getDate();
+                let month = date.getMonth() + 1;
+                let year = date.getFullYear();
+
+                voices.push(event.data);
+
+                storageRef.child(`voices/${username}/${myName}${day}${month}${year}${hour}${minutes}${seconds}`).put(voices[voices_counter]).then(() => {
+                    console.log("Uploaded a blob!");
+                });
+
+                firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesTo${username}/${voice_id}`).set({
+                    fullName: myName,
+                    voiceMsg: `${myName}${day}${month}${year}${hour}${minutes}${seconds}`,
+                    voiceId: voice_id,
+                    date: {
+                        hour: hour,
+                        minutes: minutes,
+                        seconds: seconds,
+                        day: day,
+                        month: month,
+                        year: year,
+                    }
+                });
+
+                voices_counter++;
+            });
+
+            document.querySelector('#send-vm').addEventListener('mouseup', () => {
+                mediaRecorder.stop();
+                console.log('record stop');
+            });
+        });
+
     renderMessagesStudent(`${username}`, `${myName}`, `${studentKlass}`);
 }
 
@@ -442,50 +678,55 @@ function sendMsgToTeacher(username, name, studentKlass) {
     let user = JSON.parse(localStorage.getItem('user'));
 
     const message = document.getElementById('messageInput').value;
-    const date = new Date();
+    if (message != '') {
+        const date = new Date();
 
-    const messageId = getRandId();
-
-    firebase.database().ref(`school${user.school}/students/student${name.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesTo${username}/${messageId}`).set({
-        fullName: name,
-        message: message,
-        checkMessage: false,
-        messageId: messageId,
-        date: {
-            hour: date.getHours(),
-            minutes: date.getMinutes(),
-            seconds: date.getSeconds(),
-            day: date.getDate(),
-            month: date.getMonth() + 1,
-            year: date.getFullYear(),
-        }
-    });
-
-    document.getElementById('messageInput').value = '';
+        const messageId = getRandId();
+    
+        firebase.database().ref(`school${user.school}/students/student${name.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesTo${username}/${messageId}`).set({
+            fullName: name,
+            message: message,
+            checkMessage: false,
+            messageId: messageId,
+            date: {
+                hour: date.getHours(),
+                minutes: date.getMinutes(),
+                seconds: date.getSeconds(),
+                day: date.getDate(),
+                month: date.getMonth() + 1,
+                year: date.getFullYear(),
+            }
+        });
+    
+        document.getElementById('messageInput').value = '';
+    } else {}
 }
 
 function sendMsgToStudent(username, name, studentKlass) {
     let user = JSON.parse(localStorage.getItem('user'));
 
     const message = document.getElementById('messageInput').value;
-    const date = new Date();
+    if (message != '') {
+        const date = new Date();
 
-    const messageId = getRandId();
-
-    firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesFrom${name}/${messageId}`).set({
-        fullName: name,
-        message: message,
-        checkMessage: false,
-        messageId: messageId,
-        date: {
-            hour: date.getHours(),
-            minutes: date.getMinutes(),
-            seconds: date.getSeconds(),
-            day: date.getDate(),
-            month: date.getMonth() + 1,
-            year: date.getFullYear(),
-        }
-    });
-
-    document.getElementById('messageInput').value = '';
+        const messageId = getRandId();
+    
+        firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesFrom${name}/${messageId}`).set({
+            fullName: name,
+            message: message,
+            checkMessage: false,
+            messageId: messageId,
+            date: {
+                hour: date.getHours(),
+                minutes: date.getMinutes(),
+                seconds: date.getSeconds(),
+                day: date.getDate(),
+                month: date.getMonth() + 1,
+                year: date.getFullYear(),
+            }
+        });
+    
+        document.getElementById('messageInput').value = '';
+    } else {}
 }
+

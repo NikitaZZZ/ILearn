@@ -509,6 +509,12 @@ function chatTeacherAndStudent(username, myName, studentKlass) {
         </li>
     `;
 
+    document.addEventListener('keydown', (e) => {
+        if (e.code = "Enter") {
+            sendMsgToStudent(username, myName, studentKlass);
+        }
+    });
+
     const date = new Date();
 
     navigator.mediaDevices.getUserMedia({ audio: true})
@@ -518,12 +524,24 @@ function chatTeacherAndStudent(username, myName, studentKlass) {
             let voices = [];
             let voice_id = getRandId();
 
-            document.querySelector('#send-vm').addEventListener('mousedown', () => {
+            // mousedown (start record vm)
+            document.querySelector('#send-vm').addEventListener('mousedown', function () {
                 mediaRecorder.start();
+
+                this.className = "btn btn-dark";
                 console.log('record start');
             });
 
-            mediaRecorder.addEventListener("dataavailable", (event) => {
+            // phone touch
+            document.querySelector('#send-vm').addEventListener('touchstart', function () {
+                mediaRecorder.start();
+
+                this.className = "btn btn-dark";
+                console.log('record start');
+            });
+
+            // send voice msg to storage and db
+            mediaRecorder.addEventListener("dataavailable", function (event) {
                 let hour = date.getHours();
                 let minutes = date.getMinutes();
                 let seconds = date.getSeconds();
@@ -554,9 +572,16 @@ function chatTeacherAndStudent(username, myName, studentKlass) {
                 voices_counter++;
             });
 
-            document.querySelector('#send-vm').addEventListener('mouseup', () => {
+            // mouseup (end record vm)
+            document.querySelector('#send-vm').addEventListener('mouseup', function () {
                 mediaRecorder.stop();
-                console.log('record stop');
+                this.className = "btn btn-primary";
+            });
+
+            // phone touch
+            document.querySelector('#send-vm').addEventListener('touchend', function () {
+                mediaRecorder.stop();
+                this.className = "btn btn-primary";
             });
         });
 
@@ -573,6 +598,7 @@ function chatStudentAndTeacher(username, myName, studentKlass) {
 
         <div class="input-group" id="sendMsgDiv">
             <input type="text" id="messageInput" class="form-control" placeholder="Сообщение">
+            <button class="btn btn-primary" id="send-vm"><i class="fas fa-microphone"></i></button>
             <button class="btn btn-success" id="sendMsg" onclick="sendMsgToTeacher('${username}', '${myName}', '${studentKlass}')">Отправить</button>
         </div> 
     `;
@@ -587,6 +613,12 @@ function chatStudentAndTeacher(username, myName, studentKlass) {
         </li>
     `;
 
+    document.addEventListener('keydown', (e) => {
+        if (e.code = "Enter") {
+            sendMsgToTeacher(username, myName, studentKlass);
+        }
+    });
+
     const date = new Date();
 
     navigator.mediaDevices.getUserMedia({ audio: true})
@@ -598,6 +630,7 @@ function chatStudentAndTeacher(username, myName, studentKlass) {
 
             document.querySelector('#send-vm').addEventListener('mousedown', () => {
                 mediaRecorder.start();
+
                 console.log('record start');
             });
 
@@ -645,51 +678,55 @@ function sendMsgToTeacher(username, name, studentKlass) {
     let user = JSON.parse(localStorage.getItem('user'));
 
     const message = document.getElementById('messageInput').value;
-    const date = new Date();
+    if (message != '') {
+        const date = new Date();
 
-    const messageId = getRandId();
-
-    firebase.database().ref(`school${user.school}/students/student${name.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesTo${username}/${messageId}`).set({
-        fullName: name,
-        message: message,
-        checkMessage: false,
-        messageId: messageId,
-        date: {
-            hour: date.getHours(),
-            minutes: date.getMinutes(),
-            seconds: date.getSeconds(),
-            day: date.getDate(),
-            month: date.getMonth() + 1,
-            year: date.getFullYear(),
-        }
-    });
-
-    document.getElementById('messageInput').value = '';
+        const messageId = getRandId();
+    
+        firebase.database().ref(`school${user.school}/students/student${name.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesTo${username}/${messageId}`).set({
+            fullName: name,
+            message: message,
+            checkMessage: false,
+            messageId: messageId,
+            date: {
+                hour: date.getHours(),
+                minutes: date.getMinutes(),
+                seconds: date.getSeconds(),
+                day: date.getDate(),
+                month: date.getMonth() + 1,
+                year: date.getFullYear(),
+            }
+        });
+    
+        document.getElementById('messageInput').value = '';
+    } else {}
 }
 
 function sendMsgToStudent(username, name, studentKlass) {
     let user = JSON.parse(localStorage.getItem('user'));
 
     const message = document.getElementById('messageInput').value;
-    const date = new Date();
+    if (message != '') {
+        const date = new Date();
 
-    const messageId = getRandId();
-
-    firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesFrom${name}/${messageId}`).set({
-        fullName: name,
-        message: message,
-        checkMessage: false,
-        messageId: messageId,
-        date: {
-            hour: date.getHours(),
-            minutes: date.getMinutes(),
-            seconds: date.getSeconds(),
-            day: date.getDate(),
-            month: date.getMonth() + 1,
-            year: date.getFullYear(),
-        }
-    });
-
-    document.getElementById('messageInput').value = '';
+        const messageId = getRandId();
+    
+        firebase.database().ref(`school${user.school}/students/student${username.toLowerCase().trim()} ${studentKlass.toLowerCase().trim()}/messagesFrom${name}/${messageId}`).set({
+            fullName: name,
+            message: message,
+            checkMessage: false,
+            messageId: messageId,
+            date: {
+                hour: date.getHours(),
+                minutes: date.getMinutes(),
+                seconds: date.getSeconds(),
+                day: date.getDate(),
+                month: date.getMonth() + 1,
+                year: date.getFullYear(),
+            }
+        });
+    
+        document.getElementById('messageInput').value = '';
+    } else {}
 }
 
